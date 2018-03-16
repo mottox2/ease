@@ -1,19 +1,14 @@
-import * as React from 'react';
-import './App.css';
+import * as React from 'react'
+import styled from 'styled-components'
+
+const Title = styled.h1`
+  font-size: 22px;
+`
 
 class App extends React.Component {
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-      </div>
-    );
+    return <Title>Welcome to React</Title>
   }
 }
 
-export default App;
+export default App
