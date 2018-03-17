@@ -62,24 +62,33 @@ class App extends React.Component<
             editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
           }}
           options={{ mode: 'custom' }}
-          onKeyDown={(_editor, e: any) => {
+          onKeyDown={async (_editor, e: any) => {
             if (e.keyCode === 13 && this.state.value.length > 0) {
+              await new Task(
+                this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, ''),
+                (this.state.value.match(/\w+\//g) || []).join(''),
+                this.state.value.match(/#\w+/g) || []
+              ).save()
+              const results = await Task.all()
+              const { tasks, tags } = results
+              /* tslint:disable */
               this.setState(
                 {
-                  todos: [
-                    {
-                      tagNames: this.state.value.match(/#\w+/g) || [],
-                      category: (this.state.value.match(/\w+\//g) || []).join(''),
-                      title: this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, '')
-                    },
-                    ...this.state.todos
-                  ],
-                  value: ''
-                },
-                () => {
-                  const newTask: TaskInterface = this.state.todos[0]
-                  new Task(newTask.title, newTask.category, newTask.tagNames || []).save()
+                  // todos: [
+                  //   {
+                  //     tagNames: this.state.value.match(/#\w+/g) || [],
+                  //     category: (this.state.value.match(/\w+\//g) || []).join(''),
+                  //     title: this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, '')
+                  //   },
+                  //   ...this.state.todos
+                  // ],
+                  value: '',
+                  todos: Object.keys(tasks).map(k => tasks[k]),
+                  tags
                 }
+                // () => {
+                // const newTask: TaskInterface = this.state.todos[0]
+                // }
               )
             }
           }}
