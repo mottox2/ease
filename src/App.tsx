@@ -19,11 +19,13 @@ class App extends React.Component<
   {
     todos: Array<TaskInterface>
     value: string
+    tags: any
   }
 > {
   state = {
     value: '',
-    todos: []
+    todos: [],
+    tags: {}
   }
 
   async componentWillMount() {
@@ -41,8 +43,14 @@ class App extends React.Component<
         }
       }
     })
-    const todos = await Task.all()
-    this.setState({ todos })
+    const results = await Task.all()
+    const { tasks, tags } = results
+    /* tslint:disable */
+    console.log(tasks, tags)
+    this.setState({
+      todos: Object.keys(tasks).map(k => tasks[k]),
+      tags
+    })
   }
 
   render() {
@@ -84,7 +92,7 @@ class App extends React.Component<
           }}
         />
         {this.state.todos.map((todo: TaskInterface, index: number) => (
-          <Todo key={index} todo={todo} />
+          <Todo key={index} todo={todo} tags={this.state.tags} />
         ))}
       </Container>
     )

@@ -1,4 +1,5 @@
 import Dexie from 'dexie'
+import relationships from 'dexie-relationships'
 
 export interface TaskInterface {
   id?: number
@@ -24,15 +25,18 @@ export interface TagInterface {
 export default class DataBase extends Dexie {
   tasks: Dexie.Table<TaskInterface, number>
   tags: Dexie.Table<TagInterface, number>
-  task_tags: Dexie.Table<TaskTagInterface, number>
+  taskTags: Dexie.Table<TaskTagInterface, number>
 
   constructor() {
-    super('ease')
+    super('ease', {
+      addons: [relationships]
+    })
     this.version(1).stores({
       tasks: `++id, title, category`,
       tags: `++id, name`,
-      task_tags: `++id, task_id, tag_id`
+      taskTags: `++id, taskId -> tasks.id, tagId -> tags.id`
     })
+    // debugger
   }
 }
 
@@ -42,10 +46,34 @@ export class Task implements TaskInterface {
   category: string
   tagNames?: Array<string>
   tags: Array<Tag>
+  taskTags: Array<TaskTagInterface>
 
-  static all(): Promise<Array<Task>> {
+  /* tslint:disable */
+  static async all() {
     const db = new DataBase()
-    return db.tasks.toCollection().toArray()
+    const tasks = await db.tasks.toCollection().with({ taskTags: 'taskTags' })
+    let results: any = {}
+
+    tasks.forEach((task: Task) => {
+      if (task.id) {
+        results[task.id] = task
+        results[task.id].tagIds = task.taskTags.map(t => t.tagId)
+      }
+    })
+    let tagResults = {}
+    ;(await db.tags.toArray()).forEach((tag: any) => (tagResults[tag.id] = tag))
+
+    return {
+      tasks: results,
+      tags: tagResults
+    }
+    // const taskTags = await db.task_tags
+    //   .where('task_id')
+    //   .inAnyRange([tasks[0].id, tasks.splice(-1).id])
+    // return {
+    //   tasks,
+    //   taskTags
+    // }
   }
 
   constructor(title: string, category: string, tagNames: Array<string>) {
@@ -84,7 +112,7 @@ export class TaskTag implements TaskTagInterface {
     if (!this.tag) return false
     const tag = await Tag.getOrCreate(this.tag)
     if (!tag.id) return false
-    await db.task_tags.add({ taskId: this.taskId, tagId: tag.id })
+    await db.taskTags.add({ taskId: this.taskId, tagId: tag.id })
     return true
   }
 }

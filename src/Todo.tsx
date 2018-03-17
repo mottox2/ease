@@ -4,17 +4,23 @@ import styled from 'styled-components'
 const Todo: React.StatelessComponent<{
   className?: string
   todo?: any
-}> = ({ todo, className }: any) => (
-  <div className={className}>
-    {todo.category && <div className="category">{todo.category}</div>}
-    <div className="title">{todo.title}</div>
-    {/* {todo.tags.map((tag: string, i: number) => (
-      <div className="tag" key={i}>
-        {tag}
-      </div>
-    ))} */}
-  </div>
-)
+  tags?: any
+}> = ({ todo, className, tags }: any) => {
+  const targetTags = todo.tagIds.map((id: number) => tags[id])
+  console.log(targetTags)
+  return (
+    <div className={className}>
+      {JSON.stringify(todo)}
+      {todo.category && <div className="category">{todo.category}</div>}
+      <div className="title">{todo.title}</div>
+      {targetTags.map((tag: any, i: number) => (
+        <div className="tag" key={i}>
+          {tag.name}
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default styled(Todo)`
   margin: 12px 0;
