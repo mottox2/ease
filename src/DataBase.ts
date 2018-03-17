@@ -80,19 +80,21 @@ export class Task implements TaskInterface {
     this.title = title
     this.category = category
     this.tagNames = tagNames
-    console.log(this)
+    console.log('Init: ', this)
   }
 
   async save() {
     const db = new DataBase()
     const taskId = await db.tasks.add({ title: this.title, category: this.category })
+    console.log('Save Task: ', this)
     if (!this.tagNames) {
       return
     }
-    this.tagNames.map((tag: string) => {
-      console.log(tag)
-      new TaskTag(taskId, tag).save()
-    })
+    return Promise.all(
+      this.tagNames.map((tag: string) => {
+        return new TaskTag(taskId, tag).save()
+      })
+    )
   }
 }
 
@@ -112,8 +114,8 @@ export class TaskTag implements TaskTagInterface {
     if (!this.tag) return false
     const tag = await Tag.getOrCreate(this.tag)
     if (!tag.id) return false
-    await db.taskTags.add({ taskId: this.taskId, tagId: tag.id })
-    return true
+    console.log('Save TaskTag:', this)
+    return db.taskTags.add({ taskId: this.taskId, tagId: tag.id })
   }
 }
 
@@ -141,7 +143,7 @@ export class Tag implements TagInterface {
 
   save() {
     const db = new DataBase()
-    console.log('save_tag', this.name)
+    console.log('Save Tag: ', this)
     return db.tags.add({ name: this.name })
   }
 }

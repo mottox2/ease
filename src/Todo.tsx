@@ -7,7 +7,6 @@ const Todo: React.StatelessComponent<{
   tags?: any
 }> = ({ todo, className, tags }: any) => {
   const targetTags = todo.tagIds.map((id: number) => tags[id])
-  console.log(targetTags)
   return (
     <div className={className}>
       {JSON.stringify(todo)}

@@ -62,34 +62,25 @@ class App extends React.Component<
             editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
           }}
           options={{ mode: 'custom' }}
-          onKeyDown={async (_editor, e: any) => {
+          onKeyDown={(_editor, e: any) => {
             if (e.keyCode === 13 && this.state.value.length > 0) {
-              await new Task(
+              new Task(
                 this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, ''),
                 (this.state.value.match(/\w+\//g) || []).join(''),
                 this.state.value.match(/#\w+/g) || []
-              ).save()
-              const results = await Task.all()
-              const { tasks, tags } = results
-              /* tslint:disable */
-              this.setState(
-                {
-                  // todos: [
-                  //   {
-                  //     tagNames: this.state.value.match(/#\w+/g) || [],
-                  //     category: (this.state.value.match(/\w+\//g) || []).join(''),
-                  //     title: this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, '')
-                  //   },
-                  //   ...this.state.todos
-                  // ],
-                  value: '',
-                  todos: Object.keys(tasks).map(k => tasks[k]),
-                  tags
-                }
-                // () => {
-                // const newTask: TaskInterface = this.state.todos[0]
-                // }
               )
+                .save()
+                .then(async () => {
+                  console.log('Reload:')
+                  /* tslint:disable */
+                  const results = await Task.all()
+                  const { tasks, tags } = results
+                  this.setState({
+                    todos: Object.keys(tasks).map(k => tasks[k]),
+                    tags,
+                    value: ''
+                  })
+                })
             }
           }}
           value={this.state.value}
