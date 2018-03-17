@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { defineMode } from 'codemirror'
 import { Controlled as CodeMirror } from 'react-codemirror2'
+import { Task, TaskInterface } from './DataBase'
 
 import Todo from './Todo'
 
@@ -13,20 +14,19 @@ const Title = styled.h1`
   font-size: 22px;
 `
 
-class App extends React.Component {
+class App extends React.Component<
+  {},
+  {
+    todos: Array<TaskInterface>
+    value: string
+  }
+> {
   state = {
     value: '',
-    todos: [
-      {
-        number: 1,
-        title: 'Initial TODO',
-        category: 'default/',
-        tags: ['#sample']
-      }
-    ]
+    todos: []
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     defineMode('custom', () => {
       return {
         token: (stream: any, state: any) => {
@@ -41,6 +41,9 @@ class App extends React.Component {
         }
       }
     })
+    /* tslint:disable */
+    const todos = await Task.all()
+    this.setState({ todos })
   }
 
   render() {
@@ -56,18 +59,23 @@ class App extends React.Component {
           }}
           onKeyDown={(_editor, e: any) => {
             if (e.keyCode === 13 && this.state.value.length > 0) {
-              this.setState({
-                todos: [
-                  {
-                    number: this.state.todos[0].number + 1,
-                    tags: this.state.value.match(/#\w+/g) || [],
-                    category: (this.state.value.match(/\w+\//g) || []).join(''),
-                    title: this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, '')
-                  },
-                  ...this.state.todos
-                ],
-                value: ''
-              })
+              this.setState(
+                {
+                  todos: [
+                    {
+                      tags: this.state.value.match(/#\w+/g) || [],
+                      category: (this.state.value.match(/\w+\//g) || []).join(''),
+                      title: this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, '')
+                    },
+                    ...this.state.todos
+                  ],
+                  value: ''
+                },
+                () => {
+                  const newTask: TaskInterface = this.state.todos[0]
+                  new Task(newTask.title, newTask.category, []).save()
+                }
+              )
             }
           }}
           value={this.state.value}
@@ -78,7 +86,7 @@ class App extends React.Component {
             return true
           }}
         />
-        {this.state.todos.map(todo => <Todo key={todo.number} todo={todo} />)}
+        {this.state.todos.map((todo: TaskInterface) => <Todo key={todo.id} todo={todo} />)}
       </Container>
     )
   }

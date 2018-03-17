@@ -8,11 +8,11 @@ const Todo: React.StatelessComponent<{
   <div className={className}>
     {todo.category && <div className="category">{todo.category}</div>}
     <div className="title">{todo.title}</div>
-    {todo.tags.map((tag: string, i: number) => (
+    {/* {todo.tags.map((tag: string, i: number) => (
       <div className="tag" key={i}>
         {tag}
       </div>
-    ))}
+    ))} */}
   </div>
 )
 
