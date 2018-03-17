@@ -16,6 +16,10 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
+"@types/codemirror@^0.0.55":
+  version "0.0.55"
+  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.55.tgz#f4292b7a5f33b2aab509501c3db7e45d19a7c057"
+
 "@types/jest@^22.2.0":
   version "22.2.0"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.2.0.tgz#55ce83139f7ad1b48b414c3927746614c6963c0f"
@@ -1519,6 +1523,10 @@ coa@~1.0.1:
 code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
+
+codemirror@^5.35.0:
+  version "5.35.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.35.0.tgz#280653d495455bc66aa87e6284292b02775ba878"
 
 collection-visit@^1.0.0:
   version "1.0.0"
@@ -5696,6 +5704,10 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     ini "~1.3.0"
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
+
+react-codemirror2@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-4.2.0.tgz#8336e9f5e042f8a59470f3d3ad43fc053da1872c"
 
 react-dev-utils@4.2.1:
   version "4.2.1"
