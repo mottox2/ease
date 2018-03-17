@@ -26,7 +26,22 @@ class App extends React.Component {
     ]
   }
 
-  instance: any
+  componentWillMount() {
+    defineMode('custom', () => {
+      return {
+        token: (stream: any, state: any) => {
+          if (stream.match(/#\w+/)) {
+            return 'keyword'
+          }
+          if (stream.match(/\w+\//)) {
+            return 'comment'
+          }
+          stream.next()
+          return null
+        }
+      }
+    })
+  }
 
   render() {
     return (
@@ -34,33 +49,13 @@ class App extends React.Component {
         <Title>Todo List</Title>
         <CodeMirror
           editorDidMount={(editor: any) => {
-            this.instance = editor
-            this.instance.setSize(null, 40)
             editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
-          }}
-          autoFocus={true}
-          editorWillMount={() => {
-            defineMode('custom', () => {
-              return {
-                token: (stream: any, state: any) => {
-                  if (stream.match(/#\w+/)) {
-                    return 'keyword'
-                  }
-                  if (stream.match(/\w+\//)) {
-                    return 'comment'
-                  }
-                  stream.next()
-                  return null
-                }
-              }
-            })
           }}
           options={{
             mode: 'custom'
           }}
           onKeyDown={(_editor, e: any) => {
             if (e.keyCode === 13 && this.state.value.length > 0) {
-              // console.log(this.state.value)
               this.setState({
                 todos: [
                   {
@@ -76,15 +71,11 @@ class App extends React.Component {
             }
           }}
           value={this.state.value}
-          onBeforeChange={(editor, change, value) => {
-            // var newtext = change.text.join('').replace(/\n/g, '')
-            // change.update(change.from, change.to, [newtext])
+          onBeforeChange={(editor, change: any, value) => {
+            const newtext = change.text.join('').replace(/\n/g, '')
+            change.update(change.from, change.to, [newtext])
             this.setState({ value: value.replace(/\n/g, '') })
-            // this.setState({ value: value.replace(/\w+\//g, '') })
             return true
-          }}
-          onChange={(editor, data, value) => {
-            // console.log(editor, data, value)
           }}
         />
         {this.state.todos.map(todo => <Todo key={todo.number} todo={todo} />)}
