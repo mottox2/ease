@@ -41,7 +41,6 @@ class App extends React.Component<
         }
       }
     })
-    /* tslint:disable */
     const todos = await Task.all()
     this.setState({ todos })
   }
@@ -54,16 +53,14 @@ class App extends React.Component<
           editorDidMount={(editor: any) => {
             editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
           }}
-          options={{
-            mode: 'custom'
-          }}
+          options={{ mode: 'custom' }}
           onKeyDown={(_editor, e: any) => {
             if (e.keyCode === 13 && this.state.value.length > 0) {
               this.setState(
                 {
                   todos: [
                     {
-                      tags: this.state.value.match(/#\w+/g) || [],
+                      tagNames: this.state.value.match(/#\w+/g) || [],
                       category: (this.state.value.match(/\w+\//g) || []).join(''),
                       title: this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, '')
                     },
@@ -73,7 +70,7 @@ class App extends React.Component<
                 },
                 () => {
                   const newTask: TaskInterface = this.state.todos[0]
-                  new Task(newTask.title, newTask.category, []).save()
+                  new Task(newTask.title, newTask.category, newTask.tagNames || []).save()
                 }
               )
             }
@@ -86,7 +83,9 @@ class App extends React.Component<
             return true
           }}
         />
-        {this.state.todos.map((todo: TaskInterface) => <Todo key={todo.id} todo={todo} />)}
+        {this.state.todos.map((todo: TaskInterface, index: number) => (
+          <Todo key={index} todo={todo} />
+        ))}
       </Container>
     )
   }
