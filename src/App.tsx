@@ -43,6 +43,8 @@ class App extends React.Component<
     })
     DataBase.initData()
     const tasks = await Task.all()
+    console.log(await Task.byPath('sample'))
+    console.log(await Task.byTag('tag'))
     /* tslint:disable */
     this.setState({
       todos: Object.keys(tasks).map(k => tasks[k])
