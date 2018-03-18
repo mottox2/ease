@@ -10,11 +10,15 @@ const Todo: React.StatelessComponent<{
     <div className={className}>
       {todo.category && <div className="category">{todo.category}</div>}
       <div className="title">{todo.title}</div>
-      {todo.tags.map((tag: any, i: number) => (
-        <div className="tag" key={i}>
-          {tag.name}
-        </div>
-      ))}
+      {todo.tags.map(
+        // FIXME: https://github.com/ignasbernotas/dexie-relationships/pull/31 がマージされたら分岐を削除
+        (tag: any, i: number) =>
+          tag.name.length > 0 ? (
+            <div className="tag" key={i}>
+              #{tag.name}
+            </div>
+          ) : null
+      )}
     </div>
   )
 }

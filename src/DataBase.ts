@@ -28,6 +28,42 @@ export default class DataBase extends Dexie {
       taskTags: `++id, taskId -> tasks.id, name`
     })
   }
+
+  static async initData() {
+    const db = new this()
+    const tasks = await db.tasks.toCollection().toArray()
+    if (tasks.length < 1) {
+      db.tasks.bulkAdd([
+        {
+          title: 'task',
+          category: 'sample/'
+        },
+        {
+          title: 'task2',
+          category: 'sample/'
+        }
+      ])
+
+      db.taskTags.bulkAdd([
+        {
+          taskId: 1,
+          name: 'sample'
+        },
+        {
+          taskId: 1,
+          name: 'tag'
+        },
+        {
+          taskId: 2,
+          name: 'tag'
+        },
+        {
+          taskId: 2,
+          name: 'hoge'
+        }
+      ])
+    }
+  }
 }
 
 export class Task implements TaskInterface {

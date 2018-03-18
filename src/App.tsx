@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { defineMode } from 'codemirror'
 import { Controlled as CodeMirror } from 'react-codemirror2'
-import { Task, TaskInterface } from './DataBase'
+import DataBase, { Task, TaskInterface } from './DataBase'
 
 import Todo from './Todo'
 
@@ -41,6 +41,7 @@ class App extends React.Component<
         }
       }
     })
+    DataBase.initData()
     const tasks = await Task.all()
     /* tslint:disable */
     this.setState({
@@ -62,7 +63,8 @@ class App extends React.Component<
               new Task(
                 this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, ''),
                 (this.state.value.match(/\w+\//g) || []).join(''),
-                this.state.value.match(/#\w+/g) || []
+                // FIXME: https://github.com/ignasbernotas/dexie-relationships/pull/31 がマージされたら空Arrayにする
+                (this.state.value.match(/#\w+/g) || ['']).map(str => str.replace('#', ''))
               )
                 .save()
                 .then(async () => {
