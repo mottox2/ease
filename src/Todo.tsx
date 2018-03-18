@@ -6,13 +6,11 @@ const Todo: React.StatelessComponent<{
   todo?: any
   tags?: any
 }> = ({ todo, className, tags }: any) => {
-  const targetTags = todo.tagIds.map((id: number) => tags[id])
   return (
     <div className={className}>
-      {JSON.stringify(todo)}
       {todo.category && <div className="category">{todo.category}</div>}
       <div className="title">{todo.title}</div>
-      {targetTags.map((tag: any, i: number) => (
+      {todo.tags.map((tag: any, i: number) => (
         <div className="tag" key={i}>
           {tag.name}
         </div>

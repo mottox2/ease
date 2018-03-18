@@ -19,13 +19,11 @@ class App extends React.Component<
   {
     todos: Array<TaskInterface>
     value: string
-    tags: any
   }
 > {
   state = {
     value: '',
-    todos: [],
-    tags: {}
+    todos: []
   }
 
   async componentWillMount() {
@@ -43,13 +41,10 @@ class App extends React.Component<
         }
       }
     })
-    const results = await Task.all()
-    const { tasks, tags } = results
+    const tasks = await Task.all()
     /* tslint:disable */
-    console.log(tasks, tags)
     this.setState({
-      todos: Object.keys(tasks).map(k => tasks[k]),
-      tags
+      todos: Object.keys(tasks).map(k => tasks[k])
     })
   }
 
@@ -73,11 +68,9 @@ class App extends React.Component<
                 .then(async () => {
                   console.log('Reload:')
                   /* tslint:disable */
-                  const results = await Task.all()
-                  const { tasks, tags } = results
+                  const tasks = await Task.all()
                   this.setState({
                     todos: Object.keys(tasks).map(k => tasks[k]),
-                    tags,
                     value: ''
                   })
                 })
@@ -92,7 +85,7 @@ class App extends React.Component<
           }}
         />
         {this.state.todos.map((todo: TaskInterface, index: number) => (
-          <Todo key={index} todo={todo} tags={this.state.tags} />
+          <Todo key={index} todo={todo} />
         ))}
       </Container>
     )
