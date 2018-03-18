@@ -43,6 +43,8 @@ class App extends React.Component<
     })
     DataBase.initData()
     const tasks = await Task.all()
+    console.log(await Task.byPath('sample'))
+    console.log(await Task.byTag('tag'))
     /* tslint:disable */
     this.setState({
       todos: Object.keys(tasks).map(k => tasks[k])
@@ -58,7 +60,7 @@ class App extends React.Component<
             editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
           }}
           options={{ mode: 'custom' }}
-          onKeyDown={(_editor, e: any) => {
+          onKeyDown={(editor, e: any) => {
             if (e.keyCode === 13 && this.state.value.length > 0) {
               new Task(
                 this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, ''),
@@ -71,15 +73,21 @@ class App extends React.Component<
                   console.log('Reload:')
                   /* tslint:disable */
                   const tasks = await Task.all()
-                  this.setState({
-                    todos: Object.keys(tasks).map(k => tasks[k]),
-                    value: ''
-                  })
+                  editor.setValue('')
+                  this.setState(
+                    {
+                      todos: Object.keys(tasks).map(k => tasks[k]),
+                      value: ''
+                    },
+                    () => {
+                      console.log(this.state)
+                    }
+                  )
                 })
             }
           }}
           value={this.state.value}
-          onBeforeChange={(editor, change: any, value) => {
+          onBeforeChange={(_editor, change: any, value) => {
             const newtext = change.text.join('').replace(/\n/g, '')
             change.update(change.from, change.to, [newtext])
             this.setState({ value: value.replace(/\n/g, '') })

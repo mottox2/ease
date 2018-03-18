@@ -89,6 +89,30 @@ export class Task implements TaskInterface {
     return results
   }
 
+  // TODO: うまくデータが取得できない
+  static async byTag(tag: string) {
+    const db = new DataBase()
+    const tags = await db.taskTags
+      .where('name')
+      .equals(tag)
+      .toArray()
+    const taskIds = tags.map(tag => tag.taskId)
+    // const result = await db.tasks.where({ id: taskIds }).toArray()
+    return Promise.all(
+      taskIds.map(taskId => {
+        return db.tasks.get(taskId)
+      })
+    )
+  }
+
+  static async byPath(path: string) {
+    const db = new DataBase()
+    return await db.tasks
+      .where('category')
+      .startsWith(path)
+      .toArray()
+  }
+
   constructor(title: string, category: string, tagNames: Array<string>) {
     this.title = title
     this.category = category
