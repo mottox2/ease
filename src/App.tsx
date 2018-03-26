@@ -4,7 +4,7 @@ import { defineMode } from 'codemirror'
 import { Controlled as CodeMirror } from 'react-codemirror2'
 import DataBase, { Task, TaskInterface } from './DataBase'
 
-import Todo from './Todo'
+import Todo from './components/Todo'
 
 const Container = styled.div`
   padding: 16px;
