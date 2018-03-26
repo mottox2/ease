@@ -31,9 +31,14 @@ class TaskInput extends React.Component<{ addTask: Function }> {
   addTask() {
     const newTask = new Task(
       this.state.title.replace(/#\w+/g, '').replace(/\w+\//g, ''),
-      (this.state.title.match(/\w+\//g) || []).join('')
+      (this.state.title.match(/\w+\//g) || []).join(''),
+      this.state.description
     )
     this.props.addTask(newTask)
+    this.setState({
+      title: '',
+      description: ''
+    })
   }
 
   render() {
@@ -66,6 +71,11 @@ class TaskInput extends React.Component<{ addTask: Function }> {
           <textarea
             value={this.state.description}
             onChange={(e: any) => this.setState({ description: e.target.value })}
+            onKeyDown={(e: any) => {
+              if (e.keyCode === 13 && this.state.description.length > 0) {
+                this.addTask()
+              }
+            }}
             ref={(element: any) => {
               if (element) {
                 element.focus()

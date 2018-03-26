@@ -1,14 +1,19 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import { Task } from '../DataBase'
 
 const TaskItem: React.StatelessComponent<{
   className?: string
-  task?: any
-}> = ({ task, className, tags }: any) => {
+  task?: Task
+}> = ({ task, className }) => {
+  if (!task) {
+    return <div>Invalid task</div>
+  }
   return (
     <div className={className}>
       {task.category && <div className="category">{task.category}</div>}
       <div className="title">{task.title}</div>
+      {task.description.length > 0 && <p>{task.description}</p>}
     </div>
   )
 }

@@ -44,9 +44,7 @@ class App extends React.Component<
       <Container>
         <Title>Todo List</Title>
         <TaskInput addTask={this.addTask} />
-        {this.state.tasks.map((task: TaskInterface, index: number) => (
-          <TaskItem key={index} task={task} />
-        ))}
+        {this.state.tasks.map((task: Task, index: number) => <TaskItem key={index} task={task} />)}
       </Container>
     )
   }

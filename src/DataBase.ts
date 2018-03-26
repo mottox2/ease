@@ -4,6 +4,7 @@ export interface TaskInterface {
   id?: number
   title: string
   category: string
+  description: string
 }
 
 /* tslint:disable */
@@ -24,11 +25,13 @@ export default class DataBase extends Dexie {
       db.tasks.bulkAdd([
         {
           title: 'task',
-          category: 'sample/'
+          category: 'sample/',
+          description: ''
         },
         {
           title: 'task2',
-          category: 'sample/'
+          category: 'sample/',
+          description: ''
         }
       ])
     }
@@ -39,6 +42,7 @@ export class Task implements TaskInterface {
   id?: number
   title: string
   category: string
+  description: string
 
   /* tslint:disable */
   static async all() {
@@ -63,15 +67,20 @@ export class Task implements TaskInterface {
       .toArray()
   }
 
-  constructor(title: string, category: string) {
+  constructor(title: string, category: string, description: string) {
     this.title = title
     this.category = category
+    this.description = description
     console.log('Init: ', this)
   }
 
   async save() {
     const db = new DataBase()
-    await db.tasks.add({ title: this.title, category: this.category })
+    await db.tasks.add({
+      title: this.title,
+      category: this.category,
+      description: this.description
+    })
     console.log('Save Task: ', this)
   }
 }
