@@ -1,19 +1,19 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
-const Todo: React.StatelessComponent<{
+const TaskItem: React.StatelessComponent<{
   className?: string
-  todo?: any
-}> = ({ todo, className, tags }: any) => {
+  task?: any
+}> = ({ task, className, tags }: any) => {
   return (
     <div className={className}>
-      {todo.category && <div className="category">{todo.category}</div>}
-      <div className="title">{todo.title}</div>
+      {task.category && <div className="category">{task.category}</div>}
+      <div className="title">{task.title}</div>
     </div>
   )
 }
 
-export default styled(Todo)`
+export default styled(TaskItem)`
   margin: 12px 0;
   padding-bottom: 12px;
   border-bottom: 1px solid #e5e5e5;

@@ -1,11 +1,29 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Controlled as CodeMirror } from 'react-codemirror2'
+import { defineMode } from 'codemirror'
 import { Task } from '../DataBase'
 
 class TaskInput extends React.Component<{ addTask: Function }> {
   state = {
     value: ''
+  }
+
+  componentWillMount() {
+    defineMode('custom', () => {
+      return {
+        token: (stream: any, state: any) => {
+          if (stream.match(/#\w+/)) {
+            return 'keyword'
+          }
+          if (stream.match(/\w+\//)) {
+            return 'comment'
+          }
+          stream.next()
+          return null
+        }
+      }
+    })
   }
 
   render() {

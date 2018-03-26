@@ -1,9 +1,8 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { defineMode } from 'codemirror'
 import DataBase, { Task, TaskInterface } from './DataBase'
 
-import Todo from './components/Todo'
+import TaskItem from './components/TaskItem'
 import TaskInput from './components/TaskInput'
 
 const Container = styled.div`
@@ -17,11 +16,11 @@ const Title = styled.h1`
 class App extends React.Component<
   {},
   {
-    todos: Array<TaskInterface>
+    tasks: Array<TaskInterface>
   }
 > {
   state = {
-    todos: []
+    tasks: []
   }
 
   addTask = (task: Task) => {
@@ -32,24 +31,10 @@ class App extends React.Component<
 
   async fetchTask() {
     const tasks = await Task.all()
-    this.setState({ todos: Object.keys(tasks).map(k => tasks[k]) })
+    this.setState({ tasks: Object.keys(tasks).map(k => tasks[k]) })
   }
 
   async componentWillMount() {
-    defineMode('custom', () => {
-      return {
-        token: (stream: any, state: any) => {
-          if (stream.match(/#\w+/)) {
-            return 'keyword'
-          }
-          if (stream.match(/\w+\//)) {
-            return 'comment'
-          }
-          stream.next()
-          return null
-        }
-      }
-    })
     DataBase.initData()
     this.fetchTask()
   }
@@ -59,8 +44,8 @@ class App extends React.Component<
       <Container>
         <Title>Todo List</Title>
         <TaskInput addTask={this.addTask} />
-        {this.state.todos.map((todo: TaskInterface, index: number) => (
-          <Todo key={index} todo={todo} />
+        {this.state.tasks.map((task: TaskInterface, index: number) => (
+          <TaskItem key={index} task={task} />
         ))}
       </Container>
     )
