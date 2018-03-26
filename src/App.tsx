@@ -44,7 +44,6 @@ class App extends React.Component<
     DataBase.initData()
     const tasks = await Task.all()
     console.log(await Task.byPath('sample'))
-    console.log(await Task.byTag('tag'))
     /* tslint:disable */
     this.setState({
       todos: Object.keys(tasks).map(k => tasks[k])
@@ -64,9 +63,7 @@ class App extends React.Component<
             if (e.keyCode === 13 && this.state.value.length > 0) {
               new Task(
                 this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, ''),
-                (this.state.value.match(/\w+\//g) || []).join(''),
-                // FIXME: https://github.com/ignasbernotas/dexie-relationships/pull/31 がマージされたら空Arrayにする
-                (this.state.value.match(/#\w+/g) || ['']).map(str => str.replace('#', ''))
+                (this.state.value.match(/\w+\//g) || []).join('')
               )
                 .save()
                 .then(async () => {
