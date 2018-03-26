@@ -6,7 +6,9 @@ import { Task } from '../DataBase'
 
 class TaskInput extends React.Component<{ addTask: Function }> {
   state = {
-    value: ''
+    title: '',
+    description: '',
+    enabledDescription: false
   }
 
   componentWillMount() {
@@ -26,31 +28,52 @@ class TaskInput extends React.Component<{ addTask: Function }> {
     })
   }
 
+  addTask() {
+    const newTask = new Task(
+      this.state.title.replace(/#\w+/g, '').replace(/\w+\//g, ''),
+      (this.state.title.match(/\w+\//g) || []).join('')
+    )
+    this.props.addTask(newTask)
+  }
+
   render() {
     return (
-      <CodeMirror
-        editorDidMount={(editor: any) => {
-          editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
-        }}
-        options={{ mode: 'custom' }}
-        onKeyDown={(editor, e: any) => {
-          if (e.keyCode === 13 && this.state.value.length > 0) {
-            const newTask = new Task(
-              this.state.value.replace(/#\w+/g, '').replace(/\w+\//g, ''),
-              (this.state.value.match(/\w+\//g) || []).join('')
-            )
-            this.props.addTask(newTask)
-            editor.setValue('')
-          }
-        }}
-        value={this.state.value}
-        onBeforeChange={(_editor, change: any, value) => {
-          const newtext = change.text.join('').replace(/\n/g, '')
-          change.update(change.from, change.to, [newtext])
-          this.setState({ value: value.replace(/\n/g, '') })
-          return true
-        }}
-      />
+      <React.Fragment>
+        <CodeMirror
+          editorDidMount={(editor: any) => {
+            editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
+          }}
+          options={{ mode: 'custom' }}
+          onKeyDown={(editor, e: any) => {
+            if (e.keyCode === 13 && e.metaKey) {
+              this.setState({ enabledDescription: true })
+              return
+            }
+            if (e.keyCode === 13 && this.state.title.length > 0) {
+              this.addTask()
+              editor.setValue('')
+            }
+          }}
+          value={this.state.title}
+          onBeforeChange={(_editor, change: any, value) => {
+            const newtext = change.text.join('').replace(/\n/g, '')
+            change.update(change.from, change.to, [newtext])
+            this.setState({ title: value.replace(/\n/g, '') })
+            return true
+          }}
+        />
+        {this.state.enabledDescription && (
+          <textarea
+            value={this.state.description}
+            onChange={(e: any) => this.setState({ description: e.target.value })}
+            ref={(element: any) => {
+              if (element) {
+                element.focus()
+              }
+            }}
+          />
+        )}
+      </React.Fragment>
     )
   }
 }
