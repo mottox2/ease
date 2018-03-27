@@ -1,5 +1,4 @@
 import * as React from 'react'
-import styled from 'styled-components'
 import { Controlled as CodeMirror } from 'react-codemirror2'
 import { defineMode } from 'codemirror'
 import { Task } from '../DataBase'
@@ -88,17 +87,4 @@ class TaskInput extends React.Component<{ addTask: Function }> {
   }
 }
 
-export default styled(TaskInput)`
-  margin: 12px 0;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e5e5e5;
-  animation: fadeIn 0.4s ease-out;
-  .category {
-    opacity: 0.8;
-    font-size: 12px;
-  }
-  .title {
-    font-weight: bold;
-    display: inline-block;
-  }
-`
+export default TaskInput

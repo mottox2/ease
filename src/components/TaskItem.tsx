@@ -13,7 +13,7 @@ const TaskItem: React.StatelessComponent<{
     <div className={className}>
       {task.category && <div className="category">{task.category}</div>}
       <div className="title">{task.title}</div>
-      {task.description.length > 0 && <p>{task.description}</p>}
+      {task.description.length > 0 && <p className="description">{task.description}</p>}
     </div>
   )
 }
@@ -26,9 +26,15 @@ export default styled(TaskItem)`
   .category {
     opacity: 0.8;
     font-size: 12px;
+    margin-bottom: 4px;
   }
   .title {
     font-weight: bold;
     display: inline-block;
+  }
+  .description {
+    font-size: 12px;
+    opacity: 0.6;
+    margin-bottom: 0;
   }
 `

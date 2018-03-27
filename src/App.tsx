@@ -42,7 +42,10 @@ const Main = styled.div`
 `
 
 const Title = styled.h1`
+  padding: 12px 12px;
+  padding-top: 0;
   font-size: 22px;
+  margin: 0;
 `
 
 class App extends React.Component<
@@ -76,12 +79,12 @@ class App extends React.Component<
     return (
       <Container>
         <Sidebar>
+          <Title>Ease Todo</Title>
           <SidebarItem>
             すべてのタスク<small>{tasks.length}</small>
           </SidebarItem>
         </Sidebar>
         <Main>
-          <Title>Ease Todo</Title>
           <TaskInput addTask={this.addTask} />
           {tasks.map((task: Task, index: number) => <TaskItem key={index} task={task} />)}
         </Main>
