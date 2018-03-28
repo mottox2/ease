@@ -132,6 +132,10 @@ export class Category implements CategoryInterface {
     this.name = name
   }
 
+  fullPath(): string {
+    return [this.path, this.id].filter(v => v).join('/')
+  }
+
   static async all() {
     const db = new DataBase()
     const categories = await db.categories.toCollection().toArray()
@@ -147,12 +151,12 @@ export class Category implements CategoryInterface {
   }
 
   /* tslint:disable */
-  static async findOrCreate(fullName: string) {
+  static async findOrCreate(fullName: string): Promise<Category> {
     const names = fullName.split('/')
     const db = new DataBase()
     const categories = await db.categories.toCollection().toArray()
 
-    searchChildren(
+    const result = await searchChildren(
       {
         path: '',
         id: undefined
@@ -160,6 +164,8 @@ export class Category implements CategoryInterface {
       names,
       categories
     )
+    // console.log('findOrCreate: ', result)
+    return new this(result.id, result.path, result.name)
   }
 }
 
@@ -167,7 +173,7 @@ async function searchChildren(
   searchCategory: any,
   names: Array<string>,
   categories: Array<CategoryInterface>
-) {
+): Promise<any> {
   const searchPath = [searchCategory.path, searchCategory.id].filter(a => a).join('/') // ex. 1
   const searchName = names[0]
   let result = categories.filter(category => category.path === searchPath).find(category => {
@@ -180,8 +186,10 @@ async function searchChildren(
     result = await createCategory(searchPath, searchName)
   }
 
-  if (names.length === 1) return
-  searchChildren(result, names.slice(1), categories)
+  if (names.length === 1) {
+    return result
+  }
+  return searchChildren(result, names.slice(1), categories)
 }
 
 async function createCategory(path: string, name: string): Promise<CategoryInterface> {

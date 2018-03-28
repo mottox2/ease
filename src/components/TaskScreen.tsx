@@ -109,7 +109,7 @@ class App extends React.Component<
   async componentWillMount() {
     await DataBase.initData()
     this.fetchTask()
-    Category.findOrCreate('sample/nest2/deep')
+    console.log((await Category.findOrCreate('sample/nest2/deep')).fullPath())
   }
 
   updateTask = (newTask: Task) => {
