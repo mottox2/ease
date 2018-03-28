@@ -10,7 +10,7 @@ export interface TaskInterface {
 
 export interface CategoryInterface {
   id?: number
-  categoryId: string
+  path: string
   name: string
 }
 
@@ -25,7 +25,7 @@ export default class DataBase extends Dexie {
       tasks: `++id, category, done`
     })
     this.version(2).stores({
-      categories: `++id, categoryId`
+      categories: `++id, path`
     })
   }
 
@@ -123,28 +123,91 @@ export class Task implements TaskInterface {
 
 export class Category implements CategoryInterface {
   id?: number
-  categoryId: string
+  path: string
   name: string
 
-  constructor(id: number, categoryId: string, name: string) {
+  constructor(id: number, path: string, name: string) {
     this.id = id
-    this.categoryId = categoryId
+    this.path = path
     this.name
   }
 
-  /* tslint:disable */
   static async all() {
     const db = new DataBase()
     const categories = await db.categories.toCollection().toArray()
     let results: any = {}
 
     categories.forEach((category: Category) => {
-      // console.log(task)
       if (category.id) {
-        results[category.id] = new this(category.id, category.categoryId, category.name)
+        results[category.id] = new this(category.id, category.path, category.name)
       }
     })
 
     return results
   }
+
+  /* tslint:disable */
+  static async findOrCreate(fullName: string) {
+    const names = fullName.split('/')
+    const db = new DataBase()
+    const categories = await db.categories.toCollection().toArray()
+
+    let rootCategory = categories.find((category: CategoryInterface) => {
+      console.log(category)
+      return category.path === '' && category.name === names[0]
+    })
+
+    console.log(rootCategory)
+
+    if (!rootCategory) {
+      const resultId = await db.categories.add({
+        path: '',
+        name: names[0]
+      })
+      rootCategory = {
+        id: resultId,
+        path: '',
+        name: names[0]
+      }
+    }
+
+    if (names.length > 1) {
+      console.log('Search children: ', rootCategory, names)
+      searchChildren(rootCategory, names.slice(1), categories)
+    }
+  }
 }
+
+async function searchChildren(
+  searchCategory: any,
+  names: Array<string>,
+  categories: Array<CategoryInterface>
+) {
+  const searchPath = [searchCategory.path, searchCategory.id].filter(a => a).join('/') // ex. 1
+  const name = names[0]
+  const result = categories.filter(category => category.path === searchPath).find(category => {
+    console.log(category, name)
+    return category.name === name
+  })
+  console.log('search: ', searchPath, result)
+
+  if (!result) {
+    const db = new DataBase()
+    let newCategory: CategoryInterface = {
+      path: searchPath,
+      name: name
+    }
+    const resultId = await db.categories.add(newCategory)
+    newCategory.id = resultId
+  }
+
+  if (names.length === 1) return
+  searchChildren(result, names.slice(1), categories)
+}
+
+// async function createCategory(path: string, name: string) {
+//   const db = new DataBase()
+//   const newCategory: CategoryInterface = {path, name}
+//   const resultId = await db.categories.add(newCategory)
+//   return {...newCategory, id: resultId}
+// }

@@ -39,11 +39,6 @@ const SidebarItem = styled.div`
   &:hover {
     background-color: #f0f0f0;
   }
-  small {
-    margin-left: 4px;
-    font-family: Helvetica, sans-serif;
-    opacity: 0.66;
-  }
 `
 
 const Title = styled.h1`
