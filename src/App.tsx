@@ -60,6 +60,14 @@ const Title = styled.h1`
   margin: 0;
 `
 
+const CategoryName = styled.div`
+  font-size: 15px;
+  font-weight: bold;
+  margin: 32px 0 24px;
+  color: #3c5064;
+  letter-spacing: 0.4px;
+`
+
 function groupBy(list: Array<any>, keyGetter: Function) {
   const map = new Map()
   list.forEach(item => {
@@ -78,12 +86,12 @@ class App extends React.Component<
   {},
   {
     tasks: Object
-    taskIds: Array<string | number>
+    categorizedIds: Map<string, Array<number | string>>
   }
 > {
   state = {
     tasks: [],
-    taskIds: []
+    categorizedIds: new Map()
   }
 
   addTask = (task: Task) => {
@@ -99,9 +107,9 @@ class App extends React.Component<
       (task: Task) => task.category
     )
 
+    // Normalize category
     groupedTasks.forEach((value: Array<Task>, key: string) => {
       const categoryTree = key.split('/') // => ['rootCategory', '']
-      console.log(categoryTree)
       if (categoryTree.length > 2) {
         const rootCategory = categoryTree[0] + '/'
         groupedTasks.set(rootCategory, groupedTasks.get(rootCategory).concat(value))
@@ -109,11 +117,15 @@ class App extends React.Component<
       }
     })
 
+    groupedTasks.forEach((value: Array<Task>, key: string) => {
+      groupedTasks.set(key, groupedTasks.get(key).map((task: Task) => task.id))
+    })
+
     console.log(groupedTasks)
     console.log(tasks)
     this.setState({
-      taskIds: Object.keys(tasks),
-      tasks
+      tasks,
+      categorizedIds: groupedTasks
     })
   }
 
@@ -132,7 +144,7 @@ class App extends React.Component<
   }
 
   render() {
-    const { tasks, taskIds } = this.state
+    const { tasks } = this.state
     return (
       <React.Fragment>
         <Header>
@@ -140,15 +152,26 @@ class App extends React.Component<
         </Header>
         <Container>
           <Sidebar>
-            <SidebarItem>
-              すべてのタスク<small>{tasks.length}</small>
-            </SidebarItem>
+            <SidebarItem>すべてのタスク</SidebarItem>
           </Sidebar>
           <Main>
             <TaskInput addTask={this.addTask} />
-            {taskIds.map((taskId: number, index: number) => (
-              <TaskItem key={index} task={tasks[taskId]} updateTask={this.updateTask} />
-            ))}
+            {Array.from(this.state.categorizedIds).map(([key, taskIds]) => {
+              return (
+                <div key={key}>
+                  {key === '' ? (
+                    <CategoryName style={{ opacity: 0.3 }}>Uncategorized/</CategoryName>
+                  ) : (
+                    <CategoryName>{key}</CategoryName>
+                  )}
+                  {taskIds.map((taskId: number) => {
+                    return (
+                      <TaskItem key={taskId} task={tasks[taskId]} updateTask={this.updateTask} />
+                    )
+                  })}
+                </div>
+              )
+            })}
           </Main>
         </Container>
       </React.Fragment>
