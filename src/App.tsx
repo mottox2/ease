@@ -6,14 +6,26 @@ import TaskItem from './components/TaskItem'
 import TaskInput from './components/TaskInput'
 
 const Container = styled.div`
-  max-width: 900px;
   margin: 0 auto;
   display: flex;
+  height: calc(100% - 60px);
+  flex: 1;
+  min-width: 100%;
 `
 
 const Sidebar = styled.div`
   width: 260px;
-  padding: 40px;
+  padding: 24px;
+`
+
+const Header = styled.div`
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  height: 60px;
+  position: relative;
+  background-color: #315096;
+  padding: 0 16px;
+  line-height: 60px;
 `
 
 const SidebarItem = styled.div`
@@ -33,18 +45,18 @@ const SidebarItem = styled.div`
 `
 
 const Main = styled.div`
-  width: 600px;
+  flex: 1;
   background-color: #fff;
   border-right: 1px solid #eee;
   border-left: 1px solid #eee;
   padding: 40px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  border-left: 1px solid #eee;
 `
 
 const Title = styled.h1`
-  padding: 12px 12px;
   padding-top: 0;
-  font-size: 22px;
+  font-size: 15px;
+  color: white;
   margin: 0;
 `
 
@@ -89,20 +101,24 @@ class App extends React.Component<
   render() {
     const { tasks } = this.state
     return (
-      <Container>
-        <Sidebar>
-          <Title>Ease Todo</Title>
-          <SidebarItem>
-            すべてのタスク<small>{tasks.length}</small>
-          </SidebarItem>
-        </Sidebar>
-        <Main>
-          <TaskInput addTask={this.addTask} />
-          {tasks.map((task: Task, index: number) => (
-            <TaskItem key={index} task={task} updateTask={this.updateTask} />
-          ))}
-        </Main>
-      </Container>
+      <React.Fragment>
+        <Header>
+          <Title>ease.do</Title>
+        </Header>
+        <Container>
+          <Sidebar>
+            <SidebarItem>
+              すべてのタスク<small>{tasks.length}</small>
+            </SidebarItem>
+          </Sidebar>
+          <Main>
+            <TaskInput addTask={this.addTask} />
+            {tasks.map((task: Task, index: number) => (
+              <TaskItem key={index} task={task} updateTask={this.updateTask} />
+            ))}
+          </Main>
+        </Container>
+      </React.Fragment>
     )
   }
 }

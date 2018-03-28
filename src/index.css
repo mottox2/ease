@@ -1,16 +1,22 @@
 @import '../node_modules/normalize.css/normalize.css';
 @import '../node_modules/codemirror/lib/codemirror.css';
 @import '../node_modules/codemirror/theme/material.css';
-
 body {
   background-color: #fcfcfc;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .CodeMirror {
   border: 1px solid #ddd;
   padding: 4px 8px;
 }
-.CodeMirror > * {
+
+.CodeMirror>* {
   overflow: hidden;
 }
 
