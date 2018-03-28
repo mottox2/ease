@@ -7,10 +7,10 @@ import TaskInput from './TaskInput'
 
 const CategoryName = styled.div`
   font-size: 15px;
-  font-weight: bold;
+  font-weight: 600;
   margin: 32px 0 24px;
   color: #3c5064;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.2px;
   &:first-child {
     margin-top: 0;
   }

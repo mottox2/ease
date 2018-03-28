@@ -18,6 +18,7 @@ const TaskItem: React.StatelessComponent<{
   if (!task) {
     return <div>Invalid task</div>
   }
+  const displayCategory = task.category.replace(/\w+\//, '')
   return (
     <div className={className}>
       <div
@@ -41,7 +42,7 @@ const TaskItem: React.StatelessComponent<{
         />
       </div>
       <div className="content">
-        {task.category && <div className="category">{task.category}</div>}
+        {displayCategory.length > 0 && <div className="category">{displayCategory}</div>}
         <div className="title">{task.title}</div>
         {task.description.length > 0 && <p className="description">{task.description}</p>}
       </div>
@@ -91,9 +92,10 @@ export default styled(TaskItem)`
     font-size: 14px;
   }
   .description {
-    font-size: 12px;
+    color: #3c5064;
+    font-size: 11px;
     opacity: 0.6;
-    margin-top: 8px;
+    margin-top: 4px;
     margin-bottom: 0;
   }
 `

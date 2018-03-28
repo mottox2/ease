@@ -25,15 +25,15 @@ export default class DataBase extends Dexie {
     if (tasks.length < 1) {
       db.tasks.bulkAdd([
         {
-          title: 'task',
-          category: 'sample/',
-          description: '',
+          title: 'Tutorial',
+          category: '',
+          description: 'タスクは完了すると、リロードしたタイミングで削除されます',
           done: false
         },
         {
-          title: 'task2',
-          category: 'sample/',
-          description: '',
+          title: 'Tutorial2',
+          category: 'category/',
+          description: 'スラッシュ(/)区切りでカテゴリを作ることが出来ます',
           done: false
         }
       ])
