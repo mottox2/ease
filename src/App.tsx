@@ -45,9 +45,11 @@ const SidebarItem = styled.div`
 
 const Title = styled.h1`
   padding-top: 0;
-  font-size: 15px;
+  font-size: 18px;
   color: white;
   margin: 0;
+  text-align: center;
+  font-family: Lato, sans-serif;
 `
 const App: React.SFC<{}> = () => (
   <React.Fragment>
