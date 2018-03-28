@@ -27,6 +27,10 @@ const Main = styled.div`
 
 const ScrollArea = styled.div`
   padding: 24px;
+  padding-right: 0;
+  @media screen and (max-width: 776px) {
+    padding-left: 12px;
+  }
   overflow-y: auto;
   height: calc(100% - 48px - 30px);
 `

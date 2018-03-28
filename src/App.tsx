@@ -13,6 +13,9 @@ const Container = styled.div`
 const Sidebar = styled.div`
   width: 260px;
   padding: 8px 0;
+  @media screen and (max-width: 776px) {
+    display: none;
+  }
 `
 
 const Header = styled.div`

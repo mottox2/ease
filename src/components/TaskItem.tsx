@@ -52,6 +52,7 @@ const TaskItem: React.StatelessComponent<{
 
 export default styled(TaskItem)`
   margin: 12px 0;
+  padding-right: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid #e5e5e5;
   animation: fadeIn 0.4s ease-out;
