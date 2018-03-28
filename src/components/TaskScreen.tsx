@@ -11,6 +11,33 @@ const CategoryName = styled.div`
   margin: 32px 0 24px;
   color: #3c5064;
   letter-spacing: 0.4px;
+  &:first-child {
+    margin-top: 0;
+  }
+`
+
+const Main = styled.div`
+  flex: 1;
+  background-color: #fff;
+  border-right: 1px solid #eee;
+  border-left: 1px solid #eee;
+  border-left: 1px solid #eee;
+  position: relative;
+`
+
+const ScrollArea = styled.div`
+  padding: 24px;
+  overflow-y: auto;
+  height: calc(100% - 48px - 30px);
+`
+
+const InputWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  padding: 12px;
 `
 
 function groupBy(list: Array<any>, keyGetter: Function) {
@@ -91,23 +118,27 @@ class App extends React.Component<
   render() {
     const { tasks } = this.state
     return (
-      <React.Fragment>
-        <TaskInput addTask={this.addTask} />
-        {Array.from(this.state.categorizedIds).map(([key, taskIds]) => {
-          return (
-            <div key={key}>
-              {key === '' ? (
-                <CategoryName style={{ opacity: 0.3 }}>Uncategorized/</CategoryName>
-              ) : (
-                <CategoryName>{key}</CategoryName>
-              )}
-              {taskIds.map((taskId: number) => {
-                return <TaskItem key={taskId} task={tasks[taskId]} updateTask={this.updateTask} />
-              })}
-            </div>
-          )
-        })}
-      </React.Fragment>
+      <Main>
+        <ScrollArea>
+          {Array.from(this.state.categorizedIds).map(([key, taskIds]) => {
+            return (
+              <React.Fragment key={key}>
+                {key === '' ? (
+                  <CategoryName style={{ opacity: 0.3 }}>Uncategorized/</CategoryName>
+                ) : (
+                  <CategoryName>{key}</CategoryName>
+                )}
+                {taskIds.map((taskId: number) => {
+                  return <TaskItem key={taskId} task={tasks[taskId]} updateTask={this.updateTask} />
+                })}
+              </React.Fragment>
+            )
+          })}
+        </ScrollArea>
+        <InputWrapper>
+          <TaskInput addTask={this.addTask} />
+        </InputWrapper>
+      </Main>
     )
   }
 }

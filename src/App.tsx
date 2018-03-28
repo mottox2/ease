@@ -12,7 +12,7 @@ const Container = styled.div`
 
 const Sidebar = styled.div`
   width: 260px;
-  padding: 24px 0;
+  padding: 8px 0;
 `
 
 const Header = styled.div`
@@ -23,6 +23,7 @@ const Header = styled.div`
   background-color: #315096;
   padding: 0 16px;
   line-height: 60px;
+  z-index: 10;
 `
 
 const SidebarItem = styled.div`
@@ -42,15 +43,6 @@ const SidebarItem = styled.div`
   }
 `
 
-const Main = styled.div`
-  flex: 1;
-  background-color: #fff;
-  border-right: 1px solid #eee;
-  border-left: 1px solid #eee;
-  padding: 24px;
-  border-left: 1px solid #eee;
-`
-
 const Title = styled.h1`
   padding-top: 0;
   font-size: 15px;
@@ -66,9 +58,7 @@ const App: React.SFC<{}> = () => (
       <Sidebar>
         <SidebarItem>すべてのタスク</SidebarItem>
       </Sidebar>
-      <Main>
-        <TaskScreen />
-      </Main>
+      <TaskScreen />
     </Container>
   </React.Fragment>
 )
