@@ -55,7 +55,7 @@ export class Task implements TaskInterface {
     let results: any = {}
 
     tasks.forEach((task: Task) => {
-      console.log(task)
+      // console.log(task)
       if (task.id) {
         results[task.id] = new this(task.title, task.category, task.description, {
           id: task.id,

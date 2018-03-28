@@ -60,6 +60,20 @@ const Title = styled.h1`
   margin: 0;
 `
 
+function groupBy(list: Array<any>, keyGetter: Function) {
+  const map = new Map()
+  list.forEach(item => {
+    const key = keyGetter(item)
+    const collection = map.get(key)
+    if (!collection) {
+      map.set(key, [item])
+    } else {
+      collection.push(item)
+    }
+  })
+  return map
+}
+
 class App extends React.Component<
   {},
   {
@@ -78,6 +92,22 @@ class App extends React.Component<
 
   async fetchTask() {
     const tasks = await Task.all()
+    const groupedTasks = groupBy(
+      Object.keys(tasks).map(k => tasks[k]),
+      (task: Task) => task.category
+    )
+
+    groupedTasks.forEach((value: Array<Task>, key: string) => {
+      const categoryTree = key.split('/') // => ['rootCategory', '']
+      console.log(categoryTree)
+      if (categoryTree.length > 2) {
+        const rootCategory = categoryTree[0] + '/'
+        groupedTasks.set(rootCategory, groupedTasks.get(rootCategory).concat(value))
+        groupedTasks.delete(key)
+      }
+    })
+
+    console.log(groupedTasks)
     this.setState({ tasks: Object.keys(tasks).map(k => tasks[k]) })
   }
 
