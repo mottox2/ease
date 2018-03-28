@@ -8,14 +8,24 @@ export interface TaskInterface {
   done: boolean
 }
 
+export interface CategoryInterface {
+  id?: number
+  categoryId: string
+  name: string
+}
+
 /* tslint:disable */
 export default class DataBase extends Dexie {
   tasks: Dexie.Table<TaskInterface, number>
+  categories: Dexie.Table<CategoryInterface, number>
 
   constructor() {
     super('ease')
     this.version(1).stores({
       tasks: `++id, category, done`
+    })
+    this.version(2).stores({
+      categories: `++id, categoryId`
     })
   }
 
@@ -108,5 +118,33 @@ export class Task implements TaskInterface {
       done: this.done
     })
     return this
+  }
+}
+
+export class Category implements CategoryInterface {
+  id?: number
+  categoryId: string
+  name: string
+
+  constructor(id: number, categoryId: string, name: string) {
+    this.id = id
+    this.categoryId = categoryId
+    this.name
+  }
+
+  /* tslint:disable */
+  static async all() {
+    const db = new DataBase()
+    const categories = await db.categories.toCollection().toArray()
+    let results: any = {}
+
+    categories.forEach((category: Category) => {
+      // console.log(task)
+      if (category.id) {
+        results[category.id] = new this(category.id, category.categoryId, category.name)
+      }
+    })
+
+    return results
   }
 }

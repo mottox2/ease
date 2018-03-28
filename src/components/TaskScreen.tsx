@@ -102,7 +102,7 @@ class App extends React.Component<
   }
 
   async componentWillMount() {
-    DataBase.initData()
+    await DataBase.initData()
     this.fetchTask()
   }
 
