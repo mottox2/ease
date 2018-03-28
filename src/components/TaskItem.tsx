@@ -1,7 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Task } from '../DataBase'
-// const check = require('./check.svg')
 
 const Circle = styled.div`
   border: 2px solid #ddd;
