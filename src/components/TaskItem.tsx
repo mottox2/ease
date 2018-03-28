@@ -1,6 +1,14 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Task } from '../DataBase'
+const check = require('./check.svg')
+
+const Circle = styled.div`
+  border: 2px solid #ddd;
+  border-radius: 20px;
+  width: 20px;
+  height: 20px;
+`
 
 /* tslint:disable:max-line-length */
 const TaskItem: React.StatelessComponent<{
@@ -13,18 +21,8 @@ const TaskItem: React.StatelessComponent<{
   return (
     <div className={className}>
       <div className="checkbox">
-        <svg
-          focusable="false"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-        >
-          <g fillRule="evenodd">
-            <path d="M12 21c-4.963 0-9-4.037-9-9s4.037-9 9-9 9 4.037 9 9-4.037 9-9 9m0-20C5.935 1 1 5.935 1 12s4.935 11 11 11 11-4.935 11-11S18.065 1 12 1" />
-            <path d="M15.293 8.793L11 13.086l-2.293-2.293c-.391-.391-1.023-.391-1.414 0s-.391 1.023 0 1.414l3 3c.195.195.451.293.707.293.256 0 .512-.098.707-.293l5-5c.391-.391.391-1.023 0-1.414s-1.023-.391-1.414 0" />
-          </g>
-        </svg>
+        <img src={check} />
+        <Circle />
       </div>
       <div className="content">
         {task.category && <div className="category">{task.category}</div>}
@@ -45,15 +43,17 @@ export default styled(TaskItem)`
   .checkbox {
     margin-right: 12px;
     cursor: pointer;
-    svg {
-      fill: #999;
+    position: relative;
+    img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      opacity: 0;
       display: block;
     }
-    svg path:last-child {
-      display: none;
-    }
-    &:hover svg path:last-child {
-      display: block;
+    &:hover img {
+      opacity: 0.4;
     }
   }
   .content {
