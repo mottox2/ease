@@ -1,6 +1,10 @@
 @import '../node_modules/normalize.css/normalize.css';
 @import '../node_modules/codemirror/lib/codemirror.css';
 @import '../node_modules/codemirror/theme/material.css';
+html {
+  overflow: hidden;
+}
+
 body {
   background-color: #fcfcfc;
   position: relative;
@@ -16,8 +20,9 @@ body {
 }
 
 .CodeMirror {
-  border: 1px solid #ddd;
-  padding: 4px 8px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 8px;
 }
 
 .CodeMirror>* {
@@ -25,7 +30,7 @@ body {
 }
 
 .CodeMirror-focused {
-  border-color: #1e87f0;
+  border-color: #18AA3B;
 }
 
 .CodeMirror-scroll {
