@@ -5,6 +5,7 @@ export interface TaskInterface {
   title: string
   category: string
   description: string
+  done: boolean
 }
 
 /* tslint:disable */
@@ -26,12 +27,14 @@ export default class DataBase extends Dexie {
         {
           title: 'task',
           category: 'sample/',
-          description: ''
+          description: '',
+          done: false
         },
         {
           title: 'task2',
           category: 'sample/',
-          description: ''
+          description: '',
+          done: false
         }
       ])
     }
@@ -43,6 +46,7 @@ export class Task implements TaskInterface {
   title: string
   category: string
   description: string
+  done: boolean
 
   /* tslint:disable */
   static async all() {
@@ -79,7 +83,8 @@ export class Task implements TaskInterface {
     await db.tasks.add({
       title: this.title,
       category: this.category,
-      description: this.description
+      description: this.description,
+      done: false
     })
     console.log('Save Task: ', this)
   }
