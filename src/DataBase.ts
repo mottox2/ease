@@ -31,20 +31,16 @@ export default class DataBase extends Dexie {
     const db = new this()
     const tasks = await db.tasks.toCollection().toArray()
     if (tasks.length < 1) {
-      db.tasks.bulkAdd([
-        {
-          title: 'Tutorial',
-          category: '',
-          description: 'タスクは完了すると、リロードしたタイミングで削除されます',
-          done: false
-        },
-        {
-          title: 'Tutorial2',
-          category: 'category',
-          description: 'スラッシュ(/)区切りでカテゴリを作ることが出来ます',
-          done: false
-        }
-      ])
+      await new Task(
+        'Tutorial1',
+        '',
+        'タスクは完了すると、リロードしたタイミングで削除されます'
+      ).save()
+      await new Task(
+        'Tutorial',
+        'category',
+        'スラッシュ(/)区切りでカテゴリを作ることが出来ます'
+      ).save()
     }
   }
 }

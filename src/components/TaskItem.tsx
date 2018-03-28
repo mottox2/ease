@@ -13,12 +13,12 @@ const Circle = styled.div`
 const TaskItem: React.StatelessComponent<{
   className?: string
   task?: Task
+  categories?: Array<any>
   updateTask?: Function
-}> = ({ task, className, updateTask }) => {
+}> = ({ task, className, updateTask, categories }) => {
   if (!task) {
     return <div>Invalid task</div>
   }
-  const displayCategory = task.category.replace(/\w+\//, '')
   return (
     <div className={className}>
       <div
@@ -42,7 +42,10 @@ const TaskItem: React.StatelessComponent<{
         />
       </div>
       <div className="content">
-        {displayCategory.length > 0 && <div className="category">{displayCategory}</div>}
+        {categories &&
+          categories.length > 2 && (
+            <div className="category">{categories.map(c => c.name).join('/')}</div>
+          )}
         <div className="title">{task.title}</div>
         {task.description.length > 0 && <p className="description">{task.description}</p>}
       </div>

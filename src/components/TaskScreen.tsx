@@ -91,7 +91,7 @@ class App extends React.Component<
     groupedTasks.forEach((value: Array<Task>, key: string) => {
       const categoryTree = key.split('/').filter(v => v) // => ['rootCategory', 'sub']
       if (categoryTree.length > 1) {
-        const rootCategory = categoryTree[0] + '/'
+        const rootCategory = categoryTree[0]
         if (!groupedTasks.get(rootCategory)) {
           groupedTasks.set(rootCategory, [])
         }
@@ -116,7 +116,6 @@ class App extends React.Component<
   async componentWillMount() {
     await DataBase.initData()
     this.fetchTask()
-    console.log((await Category.findOrCreate('sample/nest2/deep')).fullPath())
   }
 
   updateTask = (newTask: Task) => {
@@ -129,20 +128,32 @@ class App extends React.Component<
   }
 
   render() {
-    const { tasks } = this.state
+    const { categories, tasks } = this.state
     return (
       <Main>
         <ScrollArea>
           {Array.from(this.state.categorizedIds).map(([key, taskIds]) => {
+            const category: Category = this.state.categories[key]
+            console.log(categories, category)
             return (
               <React.Fragment key={key}>
-                {key === '' ? (
+                {category.name === '' ? (
                   <CategoryName style={{ opacity: 0.3 }}>Uncategorized</CategoryName>
                 ) : (
-                  <CategoryName>{key}</CategoryName>
+                  <CategoryName>{category.name}</CategoryName>
                 )}
                 {taskIds.map((taskId: number) => {
-                  return <TaskItem key={taskId} task={tasks[taskId]} updateTask={this.updateTask} />
+                  const task: Task = tasks[taskId]
+                  return (
+                    <TaskItem
+                      key={taskId}
+                      task={task}
+                      categories={task.category
+                        .split('/')
+                        .map(categoryId => this.state.categories[categoryId])}
+                      updateTask={this.updateTask}
+                    />
+                  )
                 })}
               </React.Fragment>
             )
