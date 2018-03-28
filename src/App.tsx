@@ -12,7 +12,7 @@ const Container = styled.div`
 
 const Sidebar = styled.div`
   width: 260px;
-  padding: 24px;
+  padding: 24px 0;
 `
 
 const Header = styled.div`
@@ -26,9 +26,10 @@ const Header = styled.div`
 `
 
 const SidebarItem = styled.div`
-  padding: 12px 12px;
+  color: #3c5064;
+  padding: 16px 16px;
   opacity: 0.88;
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
   font-weight: bold;
   &:hover {
@@ -46,7 +47,7 @@ const Main = styled.div`
   background-color: #fff;
   border-right: 1px solid #eee;
   border-left: 1px solid #eee;
-  padding: 40px;
+  padding: 24px;
   border-left: 1px solid #eee;
 `
 
