@@ -129,7 +129,7 @@ export class Category implements CategoryInterface {
   constructor(id: number, path: string, name: string) {
     this.id = id
     this.path = path
-    this.name
+    this.name = name
   }
 
   static async all() {
@@ -152,29 +152,14 @@ export class Category implements CategoryInterface {
     const db = new DataBase()
     const categories = await db.categories.toCollection().toArray()
 
-    let rootCategory = categories.find((category: CategoryInterface) => {
-      console.log(category)
-      return category.path === '' && category.name === names[0]
-    })
-
-    console.log(rootCategory)
-
-    if (!rootCategory) {
-      const resultId = await db.categories.add({
+    searchChildren(
+      {
         path: '',
-        name: names[0]
-      })
-      rootCategory = {
-        id: resultId,
-        path: '',
-        name: names[0]
-      }
-    }
-
-    if (names.length > 1) {
-      console.log('Search children: ', rootCategory, names)
-      searchChildren(rootCategory, names.slice(1), categories)
-    }
+        id: undefined
+      },
+      names,
+      categories
+    )
   }
 }
 
@@ -184,30 +169,24 @@ async function searchChildren(
   categories: Array<CategoryInterface>
 ) {
   const searchPath = [searchCategory.path, searchCategory.id].filter(a => a).join('/') // ex. 1
-  const name = names[0]
-  const result = categories.filter(category => category.path === searchPath).find(category => {
-    console.log(category, name)
-    return category.name === name
+  const searchName = names[0]
+  let result = categories.filter(category => category.path === searchPath).find(category => {
+    console.log(category, searchName)
+    return category.name === searchName
   })
   console.log('search: ', searchPath, result)
 
   if (!result) {
-    const db = new DataBase()
-    let newCategory: CategoryInterface = {
-      path: searchPath,
-      name: name
-    }
-    const resultId = await db.categories.add(newCategory)
-    newCategory.id = resultId
+    result = await createCategory(searchPath, searchName)
   }
 
   if (names.length === 1) return
   searchChildren(result, names.slice(1), categories)
 }
 
-// async function createCategory(path: string, name: string) {
-//   const db = new DataBase()
-//   const newCategory: CategoryInterface = {path, name}
-//   const resultId = await db.categories.add(newCategory)
-//   return {...newCategory, id: resultId}
-// }
+async function createCategory(path: string, name: string): Promise<CategoryInterface> {
+  const db = new DataBase()
+  const newCategory: CategoryInterface = { path, name }
+  const resultId = await db.categories.add(newCategory)
+  return { ...newCategory, id: resultId }
+}
