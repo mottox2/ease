@@ -22,9 +22,7 @@ export default class DataBase extends Dexie {
   constructor() {
     super('ease')
     this.version(1).stores({
-      tasks: `++id, category, done`
-    })
-    this.version(2).stores({
+      tasks: `++id, category, done`,
       categories: `++id, path`
     })
   }
