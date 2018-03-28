@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import DataBase, { Task, TaskInterface } from './DataBase'
+import DataBase, { Task } from './DataBase'
 
 import TaskItem from './components/TaskItem'
 import TaskInput from './components/TaskInput'
@@ -77,11 +77,13 @@ function groupBy(list: Array<any>, keyGetter: Function) {
 class App extends React.Component<
   {},
   {
-    tasks: Array<TaskInterface>
+    tasks: Object
+    taskIds: Array<string | number>
   }
 > {
   state = {
-    tasks: []
+    tasks: [],
+    taskIds: []
   }
 
   addTask = (task: Task) => {
@@ -108,7 +110,11 @@ class App extends React.Component<
     })
 
     console.log(groupedTasks)
-    this.setState({ tasks: Object.keys(tasks).map(k => tasks[k]) })
+    console.log(tasks)
+    this.setState({
+      taskIds: Object.keys(tasks),
+      tasks
+    })
   }
 
   async componentWillMount() {
@@ -117,19 +123,16 @@ class App extends React.Component<
   }
 
   updateTask = (newTask: Task) => {
-    this.setState({
-      tasks: this.state.tasks.map((task: Task) => {
-        if (task.id === newTask.id) {
-          return newTask
-        } else {
-          return task
-        }
-      })
-    })
+    let tasks: Object = { ...this.state.tasks }
+    if (!newTask.id) {
+      return
+    }
+    tasks[newTask.id] = newTask
+    this.setState({ tasks })
   }
 
   render() {
-    const { tasks } = this.state
+    const { tasks, taskIds } = this.state
     return (
       <React.Fragment>
         <Header>
@@ -143,8 +146,8 @@ class App extends React.Component<
           </Sidebar>
           <Main>
             <TaskInput addTask={this.addTask} />
-            {tasks.map((task: Task, index: number) => (
-              <TaskItem key={index} task={task} updateTask={this.updateTask} />
+            {taskIds.map((taskId: number, index: number) => (
+              <TaskItem key={index} task={tasks[taskId]} updateTask={this.updateTask} />
             ))}
           </Main>
         </Container>
