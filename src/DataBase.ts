@@ -55,8 +55,12 @@ export class Task implements TaskInterface {
     let results: any = {}
 
     tasks.forEach((task: Task) => {
+      console.log(task)
       if (task.id) {
-        results[task.id] = task
+        results[task.id] = new this(task.title, task.category, task.description, {
+          id: task.id,
+          done: task.done
+        })
       }
     })
 
@@ -71,10 +75,14 @@ export class Task implements TaskInterface {
       .toArray()
   }
 
-  constructor(title: string, category: string, description: string) {
+  constructor(title: string, category: string, description: string, options: any = {}) {
     this.title = title
     this.category = category
     this.description = description
+    if (options.id) {
+      this.id = options.id
+      this.done = options.done
+    }
     console.log('Init: ', this)
   }
 
@@ -87,5 +95,18 @@ export class Task implements TaskInterface {
       done: false
     })
     console.log('Save Task: ', this)
+  }
+
+  toggleDone(): Task {
+    this.done = !this.done
+    const db = new DataBase()
+    db.tasks.put({
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      category: this.category,
+      done: this.done
+    })
+    return this
   }
 }

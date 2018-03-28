@@ -74,6 +74,18 @@ class App extends React.Component<
     this.fetchTask()
   }
 
+  updateTask = (newTask: Task) => {
+    this.setState({
+      tasks: this.state.tasks.map((task: Task) => {
+        if (task.id === newTask.id) {
+          return newTask
+        } else {
+          return task
+        }
+      })
+    })
+  }
+
   render() {
     const { tasks } = this.state
     return (
@@ -86,7 +98,9 @@ class App extends React.Component<
         </Sidebar>
         <Main>
           <TaskInput addTask={this.addTask} />
-          {tasks.map((task: Task, index: number) => <TaskItem key={index} task={task} />)}
+          {tasks.map((task: Task, index: number) => (
+            <TaskItem key={index} task={task} updateTask={this.updateTask} />
+          ))}
         </Main>
       </Container>
     )
