@@ -63,11 +63,13 @@ class App extends React.Component<
   {},
   {
     tasks: Object
+    categories: Object
     categorizedIds: Map<string, Array<number | string>>
   }
 > {
   state = {
     tasks: [],
+    categories: [],
     categorizedIds: new Map()
   }
 
@@ -79,6 +81,7 @@ class App extends React.Component<
 
   async fetchTask() {
     const tasks = await Task.all()
+    const categories = await Category.all()
     const groupedTasks = groupBy(
       Object.keys(tasks).map(k => tasks[k]),
       (task: Task) => task.category
@@ -86,9 +89,12 @@ class App extends React.Component<
 
     // Normalize category
     groupedTasks.forEach((value: Array<Task>, key: string) => {
-      const categoryTree = key.split('/') // => ['rootCategory', '']
-      if (categoryTree.length > 2) {
+      const categoryTree = key.split('/').filter(v => v) // => ['rootCategory', 'sub']
+      if (categoryTree.length > 1) {
         const rootCategory = categoryTree[0] + '/'
+        if (!groupedTasks.get(rootCategory)) {
+          groupedTasks.set(rootCategory, [])
+        }
         groupedTasks.set(rootCategory, groupedTasks.get(rootCategory).concat(value))
         groupedTasks.delete(key)
       }
@@ -102,6 +108,7 @@ class App extends React.Component<
     console.log(tasks)
     this.setState({
       tasks,
+      categories,
       categorizedIds: groupedTasks
     })
   }
@@ -130,7 +137,7 @@ class App extends React.Component<
             return (
               <React.Fragment key={key}>
                 {key === '' ? (
-                  <CategoryName style={{ opacity: 0.3 }}>Uncategorized/</CategoryName>
+                  <CategoryName style={{ opacity: 0.3 }}>Uncategorized</CategoryName>
                 ) : (
                   <CategoryName>{key}</CategoryName>
                 )}

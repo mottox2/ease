@@ -42,7 +42,7 @@ export default class DataBase extends Dexie {
         },
         {
           title: 'Tutorial2',
-          category: 'category/',
+          category: 'category',
           description: 'スラッシュ(/)区切りでカテゴリを作ることが出来ます',
           done: false
         }
@@ -98,6 +98,7 @@ export class Task implements TaskInterface {
 
   async save() {
     const db = new DataBase()
+    this.category = (await Category.findOrCreate(this.category)).fullPath()
     await db.tasks.add({
       title: this.title,
       category: this.category,
