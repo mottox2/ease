@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import DataBase, { Task } from '../DataBase'
+import DataBase, { Task, Category } from '../DataBase'
 
 import TaskItem from './TaskItem'
 import TaskInput from './TaskInput'
@@ -11,6 +11,7 @@ const CategoryName = styled.div`
   margin: 32px 0 24px;
   color: #3c5064;
   letter-spacing: 0.2px;
+  font-family: Lato, sans-serif;
   &:first-child {
     margin-top: 0;
   }
@@ -62,11 +63,13 @@ class App extends React.Component<
   {},
   {
     tasks: Object
+    categories: Object
     categorizedIds: Map<string, Array<number | string>>
   }
 > {
   state = {
     tasks: [],
+    categories: [],
     categorizedIds: new Map()
   }
 
@@ -78,6 +81,7 @@ class App extends React.Component<
 
   async fetchTask() {
     const tasks = await Task.all()
+    const categories = await Category.all()
     const groupedTasks = groupBy(
       Object.keys(tasks).map(k => tasks[k]),
       (task: Task) => task.category
@@ -85,9 +89,12 @@ class App extends React.Component<
 
     // Normalize category
     groupedTasks.forEach((value: Array<Task>, key: string) => {
-      const categoryTree = key.split('/') // => ['rootCategory', '']
-      if (categoryTree.length > 2) {
-        const rootCategory = categoryTree[0] + '/'
+      const categoryTree = key.split('/').filter(v => v) // => ['rootCategory', 'sub']
+      if (categoryTree.length > 1) {
+        const rootCategory = categoryTree[0]
+        if (!groupedTasks.get(rootCategory)) {
+          groupedTasks.set(rootCategory, [])
+        }
         groupedTasks.set(rootCategory, groupedTasks.get(rootCategory).concat(value))
         groupedTasks.delete(key)
       }
@@ -101,12 +108,13 @@ class App extends React.Component<
     console.log(tasks)
     this.setState({
       tasks,
+      categories,
       categorizedIds: groupedTasks
     })
   }
 
   async componentWillMount() {
-    DataBase.initData()
+    await DataBase.initData()
     this.fetchTask()
   }
 
@@ -120,20 +128,32 @@ class App extends React.Component<
   }
 
   render() {
-    const { tasks } = this.state
+    const { categories, tasks } = this.state
     return (
       <Main>
         <ScrollArea>
           {Array.from(this.state.categorizedIds).map(([key, taskIds]) => {
+            const category: Category = this.state.categories[key]
+            console.log(categories, category)
             return (
               <React.Fragment key={key}>
-                {key === '' ? (
-                  <CategoryName style={{ opacity: 0.3 }}>Uncategorized/</CategoryName>
+                {category.name === '' ? (
+                  <CategoryName style={{ opacity: 0.3 }}>Uncategorized</CategoryName>
                 ) : (
-                  <CategoryName>{key}</CategoryName>
+                  <CategoryName>{category.name}</CategoryName>
                 )}
                 {taskIds.map((taskId: number) => {
-                  return <TaskItem key={taskId} task={tasks[taskId]} updateTask={this.updateTask} />
+                  const task: Task = tasks[taskId]
+                  return (
+                    <TaskItem
+                      key={taskId}
+                      task={task}
+                      categories={task.category
+                        .split('/')
+                        .map(categoryId => this.state.categories[categoryId])}
+                      updateTask={this.updateTask}
+                    />
+                  )
                 })}
               </React.Fragment>
             )
