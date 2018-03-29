@@ -58,13 +58,12 @@ function groupBy(list: Array<any>, keyGetter: Function) {
   return map
 }
 
-class App extends React.Component<
-  {},
-  {
-    tasks: Object
-    categorizedIds: Map<string, Array<number | string>>
-  }
-> {
+interface State {
+  tasks: Object
+  categorizedIds: Map<string, Array<number>>
+}
+
+class App extends React.Component<{}, State> {
   state = {
     tasks: [],
     categorizedIds: new Map()
@@ -80,28 +79,13 @@ class App extends React.Component<
     const tasks = await Task.all()
     const groupedTasks = groupBy(
       Object.keys(tasks).map(k => tasks[k]),
-      (task: Task) => task.category
+      (task: Task) => task.category.split('/')[0]
     )
-
-    // Normalize category
-    groupedTasks.forEach((value: Array<Task>, key: string) => {
-      const categoryTree = key.split('/').filter(v => v) // => ['rootCategory', 'sub']
-      if (categoryTree.length > 1) {
-        const rootCategory = categoryTree[0]
-        if (!groupedTasks.get(rootCategory)) {
-          groupedTasks.set(rootCategory, [])
-        }
-        groupedTasks.set(rootCategory, groupedTasks.get(rootCategory).concat(value))
-        groupedTasks.delete(key)
-      }
-    })
 
     groupedTasks.forEach((value: Array<Task>, key: string) => {
       groupedTasks.set(key, groupedTasks.get(key).map((task: Task) => task.id))
     })
 
-    console.log(groupedTasks)
-    console.log(tasks)
     this.setState({
       tasks,
       categorizedIds: groupedTasks
@@ -131,7 +115,7 @@ class App extends React.Component<
             return (
               <React.Fragment key={key}>
                 {key === '' ? (
-                  <CategoryName style={{ opacity: 0.3 }}>Uncategorized/</CategoryName>
+                  <CategoryName style={{ opacity: 0.3 }}>Uncategorized</CategoryName>
                 ) : (
                   <CategoryName>{key}</CategoryName>
                 )}
