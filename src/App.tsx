@@ -41,7 +41,14 @@ const SidebarItem = styled.div`
   font-family: Lato, sans-serif;
   font-weight: 500;
   &:hover {
+    background-color: #f5f5f5;
+  }
+  &.isActive {
     background-color: #f0f0f0;
+    opacity: 1;
+    &:before {
+      background-color: #ddd;
+    }
   }
   &:before {
     content: ' ';
@@ -102,7 +109,7 @@ const App: React.SFC<{}> = () => (
     </Header>
     <Container>
       <Sidebar>
-        <SidebarItem>すべてのタスク</SidebarItem>
+        <SidebarItem className="isActive">すべてのタスク</SidebarItem>
         <SidebarItems />
       </Sidebar>
       <TaskScreen />
