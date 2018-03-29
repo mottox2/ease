@@ -43,7 +43,8 @@ const SidebarItem = styled.div`
   &:hover {
     background-color: #f5f5f5;
   }
-  &.isActive {
+  &.isActive,
+  &:active {
     background-color: #f0f0f0;
     opacity: 1;
     &:before {
@@ -72,7 +73,10 @@ const Title = styled.h1`
   font-family: Lato, sans-serif;
 `
 
-class SidebarItems extends React.Component {
+class SidebarItems extends React.Component<{
+  currentCategory: string
+  onSelect: Function
+}> {
   state = {
     categories: new Map()
   }
@@ -82,17 +86,23 @@ class SidebarItems extends React.Component {
     this.setState({ categories: groupBy(categories, (c: string) => c.split('/')[0]) })
   }
 
+  /* tslint:disable */
   render() {
+    const { currentCategory, onSelect } = this.props
     return (
       <React.Fragment>
         {Array.from(this.state.categories).map(([key, categories]) => {
-          if (key === '') {
-            return null
-          }
           return categories.map((category: string, index: number) => {
             return (
-              <SidebarItem key={category} style={{ opacity: index === 0 ? 1 : 0.4 }}>
-                {category}
+              <SidebarItem
+                key={category}
+                onClick={e => {
+                  onSelect(category)
+                }}
+                className={category === currentCategory ? 'isActive' : ''}
+                style={{ opacity: index === 0 ? 1 : 0.4 }}
+              >
+                {key === '' ? 'すべてのタスク' : category}
               </SidebarItem>
             )
           })
@@ -102,19 +112,35 @@ class SidebarItems extends React.Component {
   }
 }
 
-const App: React.SFC<{}> = () => (
+class App extends React.Component {
+  state = {
+    currentCategory: ''
+  }
+
+  selectCategory = (nextCategory: string) => {
+    this.setState({ currentCategory: nextCategory })
+  }
+
+  render() {
+    const { currentCategory } = this.state
+    return (
+      <Container>
+        <Sidebar>
+          <SidebarItems currentCategory={currentCategory} onSelect={this.selectCategory} />
+        </Sidebar>
+        <TaskScreen currentCategory={currentCategory} />
+      </Container>
+    )
+  }
+}
+
+const Layout: React.SFC<{}> = () => (
   <React.Fragment>
     <Header>
       <Title>ease.do</Title>
     </Header>
-    <Container>
-      <Sidebar>
-        <SidebarItem className="isActive">すべてのタスク</SidebarItem>
-        <SidebarItems />
-      </Sidebar>
-      <TaskScreen />
-    </Container>
+    <App />
   </React.Fragment>
 )
 
-export default App
+export default Layout

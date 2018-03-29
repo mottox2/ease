@@ -52,7 +52,12 @@ interface State {
   categorizedIds: Map<string, Array<number>>
 }
 
-class App extends React.Component<{}, State> {
+class App extends React.Component<
+  {
+    currentCategory: string
+  },
+  State
+> {
   state = {
     tasks: [],
     categorizedIds: new Map()
