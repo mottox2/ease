@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import TaskScreen from './components/TaskScreen'
 import { Task } from './DataBase'
+import groupBy from './utils/groupBy'
 
 const Container = styled.div`
   margin: 0 auto;
@@ -53,21 +54,28 @@ const Title = styled.h1`
 
 class SidebarItems extends React.Component {
   state = {
-    categories: []
+    categories: new Map()
   }
 
   async componentWillMount() {
     const categories = await Task.categories()
-    console.log(categories)
-    this.setState({ categories })
+    this.setState({ categories: groupBy(categories, (c: string) => c.split('/')[0]) })
   }
 
   render() {
     return (
       <React.Fragment>
-        {this.state.categories.map(category => {
-          if (category === '') { return null }
-          return <SidebarItem key={category}>{category}</SidebarItem>
+        {Array.from(this.state.categories).map(([key, categories]) => {
+          if (key === '') {
+            return null
+          }
+          return categories.map((category: string, index: number) => {
+            return (
+              <SidebarItem key={category} style={{ opacity: index === 0 ? 1 : 0.4 }}>
+                {category}
+              </SidebarItem>
+            )
+          })
         })}
       </React.Fragment>
     )

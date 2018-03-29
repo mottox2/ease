@@ -5,6 +5,8 @@ import DataBase, { Task } from '../DataBase'
 import TaskItem from './TaskItem'
 import TaskInput from './TaskInput'
 
+import groupBy from '../utils/groupBy'
+
 const CategoryName = styled.div`
   font-size: 15px;
   font-weight: 600;
@@ -43,20 +45,6 @@ const InputWrapper = styled.div`
   background-color: white;
   padding: 12px;
 `
-
-function groupBy(list: Array<any>, keyGetter: Function) {
-  const map = new Map()
-  list.forEach(item => {
-    const key = keyGetter(item)
-    const collection = map.get(key)
-    if (!collection) {
-      map.set(key, [item])
-    } else {
-      collection.push(item)
-    }
-  })
-  return map
-}
 
 interface State {
   tasks: Object
