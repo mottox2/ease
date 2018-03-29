@@ -13,6 +13,7 @@ const CategoryName = styled.div`
   margin: 32px 0 24px;
   color: #3c5064;
   letter-spacing: 0.2px;
+  font-family: Lato, sans-serif;
   &:first-child {
     margin-top: 0;
   }

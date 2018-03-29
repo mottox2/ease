@@ -33,13 +33,26 @@ const Header = styled.div`
 
 const SidebarItem = styled.div`
   color: #3c5064;
-  padding: 16px 16px;
+  padding: 0 16px;
   opacity: 0.88;
   font-size: 14px;
+  line-height: 48px;
   cursor: pointer;
-  font-weight: bold;
+  font-family: Lato, sans-serif;
+  font-weight: 500;
   &:hover {
     background-color: #f0f0f0;
+  }
+  &:before {
+    content: ' ';
+    display: inline-block;
+    background-color: #eee;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: 8px;
+    margin-right: 16px;
+    border-radius: 12px;
   }
 `
 
