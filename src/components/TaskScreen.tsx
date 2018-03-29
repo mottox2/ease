@@ -85,9 +85,12 @@ class App extends React.Component<
 
     // Normalize category
     groupedTasks.forEach((value: Array<Task>, key: string) => {
-      const categoryTree = key.split('/') // => ['rootCategory', '']
-      if (categoryTree.length > 2) {
-        const rootCategory = categoryTree[0] + '/'
+      const categoryTree = key.split('/').filter(v => v) // => ['rootCategory', 'sub']
+      if (categoryTree.length > 1) {
+        const rootCategory = categoryTree[0]
+        if (!groupedTasks.get(rootCategory)) {
+          groupedTasks.set(rootCategory, [])
+        }
         groupedTasks.set(rootCategory, groupedTasks.get(rootCategory).concat(value))
         groupedTasks.delete(key)
       }
