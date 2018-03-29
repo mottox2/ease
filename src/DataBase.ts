@@ -71,6 +71,15 @@ export class Task implements TaskInterface {
     return results
   }
 
+  static async categories(): Promise<Array<string>> {
+    const db = new DataBase()
+    let results: Array<string> = []
+    await db.tasks.orderBy('category').uniqueKeys((keys: Array<string>) => {
+      results = keys
+    })
+    return results
+  }
+
   static async byPath(path: string) {
     const db = new DataBase()
     return await db.tasks
@@ -87,7 +96,7 @@ export class Task implements TaskInterface {
       this.id = options.id
       this.done = options.done
     }
-    console.log('Init: ', this)
+    // console.log('Init: ', this)
   }
 
   async save(): Promise<Task> {

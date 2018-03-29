@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import TaskScreen from './components/TaskScreen'
+import { Task } from './DataBase'
 
 const Container = styled.div`
   margin: 0 auto;
@@ -49,6 +50,30 @@ const Title = styled.h1`
   text-align: center;
   font-family: Lato, sans-serif;
 `
+
+class SidebarItems extends React.Component {
+  state = {
+    categories: []
+  }
+
+  async componentWillMount() {
+    const categories = await Task.categories()
+    console.log(categories)
+    this.setState({ categories })
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        {this.state.categories.map(category => {
+          if (category === '') { return null }
+          return <SidebarItem key={category}>{category}</SidebarItem>
+        })}
+      </React.Fragment>
+    )
+  }
+}
+
 const App: React.SFC<{}> = () => (
   <React.Fragment>
     <Header>
@@ -57,6 +82,7 @@ const App: React.SFC<{}> = () => (
     <Container>
       <Sidebar>
         <SidebarItem>すべてのタスク</SidebarItem>
+        <SidebarItems />
       </Sidebar>
       <TaskScreen />
     </Container>
