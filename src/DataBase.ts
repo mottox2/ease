@@ -18,26 +18,26 @@ export default class DataBase extends Dexie {
       tasks: `++id, category, done`
     })
   }
+}
 
-  static async initData() {
-    const db = new this()
-    const tasks = await db.tasks.toCollection().toArray()
-    if (tasks.length < 1) {
-      db.tasks.bulkAdd([
-        {
-          title: 'Tutorial',
-          category: '',
-          description: 'タスクは完了すると、リロードしたタイミングで削除されます',
-          done: 0
-        },
-        {
-          title: 'Tutorial2',
-          category: 'category/',
-          description: 'スラッシュ(/)区切りでカテゴリを作ることが出来ます',
-          done: 0
-        }
-      ])
-    }
+export const initializeData = async () => {
+  const db = new DataBase()
+  const taskCount = await db.tasks.count()
+  if (taskCount < 1) {
+    db.tasks.bulkAdd([
+      {
+        title: 'Tutorial',
+        category: '',
+        description: 'タスクは完了すると、リロードしたタイミングで削除されます',
+        done: 0
+      },
+      {
+        title: 'Tutorial2',
+        category: 'category/',
+        description: 'スラッシュ(/)区切りでカテゴリを作ることが出来ます',
+        done: 0
+      }
+    ])
   }
 }
 

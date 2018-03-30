@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import DataBase, { Task } from '../DataBase'
+import { Task } from '../DataBase'
 
 import TaskItem from './TaskItem'
 import TaskInput from './TaskInput'
@@ -86,8 +86,7 @@ class App extends React.Component<
     })
   }
 
-  async componentWillMount() {
-    DataBase.initData()
+  componentWillMount() {
     this.fetchTask()
   }
 
