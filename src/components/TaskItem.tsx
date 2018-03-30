@@ -8,6 +8,7 @@ const Circle = styled.div`
   border-radius: 20px;
   width: 20px;
   height: 20px;
+  transition: background-color 0.1s ease-out;
 `
 
 /* tslint:disable:max-line-length */
@@ -83,9 +84,10 @@ export default styled(TaskItem)`
       transform: translateX(-50%) translateY(-50%);
       opacity: 0;
       display: block;
+      transition: opacity 0.08s ease-out;
     }
     &:hover svg {
-      opacity: 0.4;
+      opacity: 0.3;
     }
     &.isDone svg {
       opacity: 1;
@@ -123,10 +125,10 @@ export default styled(TaskItem)`
   }
   &:hover {
     .actions i {
-      opacity: 0.3;
+      opacity: 0.2;
 
       &:hover {
-        opacity: 0.6;
+        opacity: 0.5;
       }
     }
   }
