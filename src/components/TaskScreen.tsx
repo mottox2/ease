@@ -119,27 +119,29 @@ class App extends React.Component<Props, State> {
     return (
       <Main>
         <ScrollArea>
-          {Array.from(this.state.categorizedIds).map(([key, taskIds]) => {
-            return (
-              <React.Fragment key={key}>
-                {key === '' ? (
-                  <CategoryName style={{ opacity: 0.3 }}>Uncategorized</CategoryName>
-                ) : (
-                  <CategoryName>{key}</CategoryName>
-                )}
-                {taskIds.map((taskId: number) => {
-                  return (
-                    <TaskItem
-                      key={taskId}
-                      task={tasks[taskId]}
-                      updateTask={this.updateTask}
-                      deleteTask={this.deleteTask}
-                    />
-                  )
-                })}
-              </React.Fragment>
-            )
-          })}
+          {Array.from(this.state.categorizedIds)
+            .sort()
+            .map(([key, taskIds]) => {
+              return (
+                <React.Fragment key={key}>
+                  {key === '' ? (
+                    <CategoryName style={{ opacity: 0.3 }}>Uncategorized</CategoryName>
+                  ) : (
+                    <CategoryName>{key}</CategoryName>
+                  )}
+                  {taskIds.map((taskId: number) => {
+                    return (
+                      <TaskItem
+                        key={taskId}
+                        task={tasks[taskId]}
+                        updateTask={this.updateTask}
+                        deleteTask={this.deleteTask}
+                      />
+                    )
+                  })}
+                </React.Fragment>
+              )
+            })}
         </ScrollArea>
         <InputWrapper>
           <TaskInput addTask={this.addTask} />
