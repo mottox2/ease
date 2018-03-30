@@ -73,7 +73,7 @@ const Title = styled.h1`
   font-family: Lato, sans-serif;
 `
 
-class SidebarItems extends React.Component<{
+class Side extends React.Component<{
   currentCategory: string
   onSelect: Function
 }> {
@@ -90,7 +90,7 @@ class SidebarItems extends React.Component<{
   render() {
     const { currentCategory, onSelect } = this.props
     return (
-      <React.Fragment>
+      <Sidebar>
         {Array.from(this.state.categories).map(([key, categories]) => {
           return categories.map((category: string, index: number) => {
             return (
@@ -107,7 +107,7 @@ class SidebarItems extends React.Component<{
             )
           })
         })}
-      </React.Fragment>
+      </Sidebar>
     )
   }
 }
@@ -125,9 +125,7 @@ class App extends React.Component {
     const { currentCategory } = this.state
     return (
       <Container>
-        <Sidebar>
-          <SidebarItems currentCategory={currentCategory} onSelect={this.selectCategory} />
-        </Sidebar>
+        <Side currentCategory={currentCategory} onSelect={this.selectCategory} />
         <TaskScreen currentCategory={currentCategory} />
       </Container>
     )
