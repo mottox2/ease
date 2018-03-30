@@ -79,14 +79,6 @@ export class Task implements TaskInterface {
     return results
   }
 
-  static async byPath(path: string) {
-    const db = new DataBase()
-    return await db.tasks
-      .where('category')
-      .startsWith(path)
-      .toArray()
-  }
-
   constructor(title: string, category: string, description: string, options: any = {}) {
     this.title = title
     this.category = category
