@@ -1,6 +1,8 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import TaskScreen from './components/TaskScreen'
+import { Task } from './DataBase'
+import groupBy from './utils/groupBy'
 
 const Container = styled.div`
   margin: 0 auto;
@@ -31,13 +33,34 @@ const Header = styled.div`
 
 const SidebarItem = styled.div`
   color: #3c5064;
-  padding: 16px 16px;
+  padding: 0 16px;
   opacity: 0.88;
   font-size: 14px;
+  line-height: 48px;
   cursor: pointer;
-  font-weight: bold;
+  font-family: Lato, sans-serif;
+  font-weight: 500;
   &:hover {
+    background-color: #f5f5f5;
+  }
+  &.isActive,
+  &:active {
     background-color: #f0f0f0;
+    opacity: 1;
+    &:before {
+      background-color: #ddd;
+    }
+  }
+  &:before {
+    content: ' ';
+    display: inline-block;
+    background-color: #eee;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: 8px;
+    margin-right: 16px;
+    border-radius: 12px;
   }
 `
 
@@ -49,18 +72,75 @@ const Title = styled.h1`
   text-align: center;
   font-family: Lato, sans-serif;
 `
-const App: React.SFC<{}> = () => (
+
+class SidebarItems extends React.Component<{
+  currentCategory: string
+  onSelect: Function
+}> {
+  state = {
+    categories: new Map()
+  }
+
+  async componentWillMount() {
+    const categories = await Task.categories()
+    this.setState({ categories: groupBy(categories, (c: string) => c.split('/')[0]) })
+  }
+
+  /* tslint:disable */
+  render() {
+    const { currentCategory, onSelect } = this.props
+    return (
+      <React.Fragment>
+        {Array.from(this.state.categories).map(([key, categories]) => {
+          return categories.map((category: string, index: number) => {
+            return (
+              <SidebarItem
+                key={category}
+                onClick={e => {
+                  onSelect(category)
+                }}
+                className={category === currentCategory ? 'isActive' : ''}
+                style={{ opacity: index === 0 ? 1 : 0.4 }}
+              >
+                {key === '' ? 'すべてのタスク' : category}
+              </SidebarItem>
+            )
+          })
+        })}
+      </React.Fragment>
+    )
+  }
+}
+
+class App extends React.Component {
+  state = {
+    currentCategory: ''
+  }
+
+  selectCategory = (nextCategory: string) => {
+    this.setState({ currentCategory: nextCategory })
+  }
+
+  render() {
+    const { currentCategory } = this.state
+    return (
+      <Container>
+        <Sidebar>
+          <SidebarItems currentCategory={currentCategory} onSelect={this.selectCategory} />
+        </Sidebar>
+        <TaskScreen currentCategory={currentCategory} />
+      </Container>
+    )
+  }
+}
+
+const Layout: React.SFC<{}> = () => (
   <React.Fragment>
     <Header>
       <Title>ease.do</Title>
     </Header>
-    <Container>
-      <Sidebar>
-        <SidebarItem>すべてのタスク</SidebarItem>
-      </Sidebar>
-      <TaskScreen />
-    </Container>
+    <App />
   </React.Fragment>
 )
 
-export default App
+export default Layout

@@ -1,9 +1,11 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import DataBase, { Task } from '../DataBase'
+import { Task } from '../DataBase'
 
 import TaskItem from './TaskItem'
 import TaskInput from './TaskInput'
+
+import groupBy from '../utils/groupBy'
 
 const CategoryName = styled.div`
   font-size: 15px;
@@ -11,6 +13,7 @@ const CategoryName = styled.div`
   margin: 32px 0 24px;
   color: #3c5064;
   letter-spacing: 0.2px;
+  font-family: Lato, sans-serif;
   &:first-child {
     margin-top: 0;
   }
@@ -44,26 +47,16 @@ const InputWrapper = styled.div`
   padding: 12px;
 `
 
-function groupBy(list: Array<any>, keyGetter: Function) {
-  const map = new Map()
-  list.forEach(item => {
-    const key = keyGetter(item)
-    const collection = map.get(key)
-    if (!collection) {
-      map.set(key, [item])
-    } else {
-      collection.push(item)
-    }
-  })
-  return map
+interface State {
+  tasks: Object
+  categorizedIds: Map<string, Array<number>>
 }
 
 class App extends React.Component<
-  {},
   {
-    tasks: Object
-    categorizedIds: Map<string, Array<number | string>>
-  }
+    currentCategory: string
+  },
+  State
 > {
   state = {
     tasks: [],
@@ -76,38 +69,31 @@ class App extends React.Component<
     })
   }
 
-  async fetchTask() {
-    const tasks = await Task.all()
+  async fetchTask(path: string = this.props.currentCategory) {
+    const tasks = await Task.all(path)
     const groupedTasks = groupBy(
       Object.keys(tasks).map(k => tasks[k]),
-      (task: Task) => task.category
+      (task: Task) => task.category.split('/')[0]
     )
-
-    // Normalize category
-    groupedTasks.forEach((value: Array<Task>, key: string) => {
-      const categoryTree = key.split('/') // => ['rootCategory', '']
-      if (categoryTree.length > 2) {
-        const rootCategory = categoryTree[0] + '/'
-        groupedTasks.set(rootCategory, groupedTasks.get(rootCategory).concat(value))
-        groupedTasks.delete(key)
-      }
-    })
 
     groupedTasks.forEach((value: Array<Task>, key: string) => {
       groupedTasks.set(key, groupedTasks.get(key).map((task: Task) => task.id))
     })
 
-    console.log(groupedTasks)
-    console.log(tasks)
     this.setState({
       tasks,
       categorizedIds: groupedTasks
     })
   }
 
-  async componentWillMount() {
-    DataBase.initData()
+  componentWillMount() {
     this.fetchTask()
+  }
+
+  async componentWillReceiveProps(nextProps: any) {
+    if (this.props.currentCategory !== nextProps.currentCategory) {
+      this.fetchTask(nextProps.currentCategory)
+    }
   }
 
   updateTask = (newTask: Task) => {
@@ -128,7 +114,7 @@ class App extends React.Component<
             return (
               <React.Fragment key={key}>
                 {key === '' ? (
-                  <CategoryName style={{ opacity: 0.3 }}>Uncategorized/</CategoryName>
+                  <CategoryName style={{ opacity: 0.3 }}>Uncategorized</CategoryName>
                 ) : (
                   <CategoryName>{key}</CategoryName>
                 )}

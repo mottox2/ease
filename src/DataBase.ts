@@ -5,7 +5,7 @@ export interface TaskInterface {
   title: string
   category: string
   description: string
-  done: boolean
+  done: 0 | 1
 }
 
 /* tslint:disable */
@@ -18,26 +18,26 @@ export default class DataBase extends Dexie {
       tasks: `++id, category, done`
     })
   }
+}
 
-  static async initData() {
-    const db = new this()
-    const tasks = await db.tasks.toCollection().toArray()
-    if (tasks.length < 1) {
-      db.tasks.bulkAdd([
-        {
-          title: 'Tutorial',
-          category: '',
-          description: 'タスクは完了すると、リロードしたタイミングで削除されます',
-          done: false
-        },
-        {
-          title: 'Tutorial2',
-          category: 'category/',
-          description: 'スラッシュ(/)区切りでカテゴリを作ることが出来ます',
-          done: false
-        }
-      ])
-    }
+export const initializeData = async () => {
+  const db = new DataBase()
+  const taskCount = await db.tasks.count()
+  if (taskCount < 1) {
+    db.tasks.bulkAdd([
+      {
+        title: 'Tutorial',
+        category: '',
+        description: 'タスクは完了すると、リロードしたタイミングで削除されます',
+        done: 0
+      },
+      {
+        title: 'Tutorial2',
+        category: 'category/',
+        description: 'スラッシュ(/)区切りでカテゴリを作ることが出来ます',
+        done: 0
+      }
+    ])
   }
 }
 
@@ -46,12 +46,15 @@ export class Task implements TaskInterface {
   title: string
   category: string
   description: string
-  done: boolean
+  done: 0 | 1
 
   /* tslint:disable */
-  static async all() {
+  static async all(path: string = '') {
     const db = new DataBase()
-    const tasks = await db.tasks.toCollection().toArray()
+    const tasks = await db.tasks
+      .where('category')
+      .startsWith(path)
+      .toArray()
     let results: any = {}
 
     tasks.forEach((task: Task) => {
@@ -64,6 +67,15 @@ export class Task implements TaskInterface {
       }
     })
 
+    return results
+  }
+
+  static async categories(): Promise<Array<string>> {
+    const db = new DataBase()
+    let results: Array<string> = []
+    await db.tasks.orderBy('category').uniqueKeys((keys: Array<string>) => {
+      results = keys
+    })
     return results
   }
 
@@ -83,22 +95,23 @@ export class Task implements TaskInterface {
       this.id = options.id
       this.done = options.done
     }
-    console.log('Init: ', this)
+    // console.log('Init: ', this)
   }
 
-  async save() {
+  async save(): Promise<Task> {
     const db = new DataBase()
-    await db.tasks.add({
+    const id = await db.tasks.add({
       title: this.title,
       category: this.category,
       description: this.description,
-      done: false
+      done: 0
     })
-    console.log('Save Task: ', this)
+    this.id = id
+    return this
   }
 
   toggleDone(): Task {
-    this.done = !this.done
+    this.done = this.done === 0 ? 1 : 0
     const db = new DataBase()
     db.tasks.put({
       id: this.id,
