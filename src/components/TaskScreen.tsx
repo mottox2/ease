@@ -71,9 +71,10 @@ class App extends React.Component<
 
   async fetchTask(path: string = this.props.currentCategory) {
     const tasks = await Task.all(path)
+    const pathLevel = path.split('/').length - 1
     const groupedTasks = groupBy(
       Object.keys(tasks).map(k => tasks[k]),
-      (task: Task) => task.category.split('/')[0]
+      (task: Task) => task.category.split('/')[pathLevel]
     )
 
     groupedTasks.forEach((value: Array<Task>, key: string) => {
