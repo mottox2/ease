@@ -8,6 +8,7 @@ import TaskInput from './TaskInput'
 import groupBy from '../utils/groupBy'
 
 const CategoryName = styled.div`
+  animation: fadeIn 0.4s ease-out;
   font-size: 15px;
   font-weight: 600;
   margin: 32px 0 24px;
