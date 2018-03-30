@@ -69,8 +69,8 @@ class App extends React.Component<
     })
   }
 
-  async fetchTask() {
-    const tasks = await Task.all()
+  async fetchTask(path: string = this.props.currentCategory) {
+    const tasks = await Task.all(path)
     const groupedTasks = groupBy(
       Object.keys(tasks).map(k => tasks[k]),
       (task: Task) => task.category.split('/')[0]
@@ -89,6 +89,12 @@ class App extends React.Component<
   async componentWillMount() {
     DataBase.initData()
     this.fetchTask()
+  }
+
+  async componentWillReceiveProps(nextProps: any) {
+    if (this.props.currentCategory !== nextProps.currentCategory) {
+      this.fetchTask(nextProps.currentCategory)
+    }
   }
 
   updateTask = (newTask: Task) => {

@@ -49,12 +49,11 @@ export class Task implements TaskInterface {
   done: 0 | 1
 
   /* tslint:disable */
-  static async all() {
+  static async all(path: string = '') {
     const db = new DataBase()
     const tasks = await db.tasks
-      .toCollection()
-      // .where('done')
-      // .equals(0)
+      .where('category')
+      .startsWith(path)
       .toArray()
     let results: any = {}
 
