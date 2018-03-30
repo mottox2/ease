@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Task } from '../DataBase'
+import MaterialIcon from './MaterialIcon'
 
 const Circle = styled.div`
   border: 2px solid #ddd;
@@ -45,6 +46,10 @@ const TaskItem: React.StatelessComponent<{
         {displayCategory.length > 0 && <div className="category">{displayCategory}</div>}
         <div className="title">{task.title}</div>
         {task.description.length > 0 && <p className="description">{task.description}</p>}
+      </div>
+      <div className="actions">
+        {/* <MaterialIcon icon="edit" style={{ top: 1 }} /> */}
+        <MaterialIcon icon="delete" style={{ top: 1 }} />
       </div>
     </div>
   )
@@ -98,5 +103,22 @@ export default styled(TaskItem)`
     opacity: 0.6;
     margin-top: 4px;
     margin-bottom: 0;
+  }
+  .actions {
+    display: flex;
+  }
+  .actions i {
+    opacity: 0;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+  &:hover {
+    .actions i {
+      opacity: 0.3;
+
+      &:hover {
+        opacity: 0.6;
+      }
+    }
   }
 `
