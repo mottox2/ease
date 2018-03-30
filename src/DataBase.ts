@@ -110,6 +110,13 @@ export class Task implements TaskInterface {
     return this
   }
 
+  async delete(): Promise<boolean> {
+    const db = new DataBase()
+    if (!this.id) return false
+    await db.tasks.delete(this.id)
+    return true
+  }
+
   toggleDone(): Task {
     this.done = this.done === 0 ? 1 : 0
     const db = new DataBase()

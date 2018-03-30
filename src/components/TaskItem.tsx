@@ -15,7 +15,8 @@ const TaskItem: React.StatelessComponent<{
   className?: string
   task?: Task
   updateTask?: Function
-}> = ({ task, className, updateTask }) => {
+  deleteTask?: Function
+}> = ({ task, className, updateTask, deleteTask }) => {
   if (!task) {
     return <div>Invalid task</div>
   }
@@ -49,7 +50,15 @@ const TaskItem: React.StatelessComponent<{
       </div>
       <div className="actions">
         {/* <MaterialIcon icon="edit" style={{ top: 1 }} /> */}
-        <MaterialIcon icon="delete" style={{ top: 1 }} />
+        <MaterialIcon
+          onClick={() => {
+            if (!deleteTask) {
+              return
+            }
+            deleteTask(task)
+          }}
+          icon="delete"
+        />
       </div>
     </div>
   )

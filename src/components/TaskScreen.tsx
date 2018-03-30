@@ -70,6 +70,13 @@ class App extends React.Component<Props, State> {
     })
   }
 
+  deleteTask = (task: Task) => {
+    task.delete().then(() => {
+      this.props.refresh()
+      this.fetchTask()
+    })
+  }
+
   async fetchTask(path: string = this.props.currentCategory) {
     const tasks = await Task.all(path)
     const pathLevel = path.split('/').length - 1
@@ -121,7 +128,14 @@ class App extends React.Component<Props, State> {
                   <CategoryName>{key}</CategoryName>
                 )}
                 {taskIds.map((taskId: number) => {
-                  return <TaskItem key={taskId} task={tasks[taskId]} updateTask={this.updateTask} />
+                  return (
+                    <TaskItem
+                      key={taskId}
+                      task={tasks[taskId]}
+                      updateTask={this.updateTask}
+                      deleteTask={this.deleteTask}
+                    />
+                  )
                 })}
               </React.Fragment>
             )
