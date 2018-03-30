@@ -52,12 +52,12 @@ interface State {
   categorizedIds: Map<string, Array<number>>
 }
 
-class App extends React.Component<
-  {
-    currentCategory: string
-  },
-  State
-> {
+interface Props {
+  currentCategory: string
+  refresh: Function
+}
+
+class App extends React.Component<Props, State> {
   state = {
     tasks: [],
     categorizedIds: new Map()
@@ -65,6 +65,7 @@ class App extends React.Component<
 
   addTask = (task: Task) => {
     task.save().then(() => {
+      this.props.refresh()
       this.fetchTask()
     })
   }

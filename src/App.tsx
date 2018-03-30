@@ -76,14 +76,18 @@ const Title = styled.h1`
 class Side extends React.Component<{
   currentCategory: string
   onSelect: Function
+  categories: Array<string>
 }> {
   state = {
-    categories: new Map()
+    mapedCategories: new Map()
   }
 
-  async componentWillMount() {
-    const categories = await Task.categories()
-    this.setState({ categories: groupBy(categories, (c: string) => c.split('/')[0]) })
+  componentWillReceiveProps(nextProps: any) {
+    if (this.props.categories.length !== nextProps.categories.length) {
+      this.setState({
+        mapedCategories: groupBy(nextProps.categories, (c: string) => c.split('/')[0])
+      })
+    }
   }
 
   /* tslint:disable */
@@ -91,7 +95,7 @@ class Side extends React.Component<{
     const { currentCategory, onSelect } = this.props
     return (
       <Sidebar>
-        {Array.from(this.state.categories).map(([key, categories]) => {
+        {Array.from(this.state.mapedCategories).map(([key, categories]) => {
           if (categories.length === 0) return null
           const category = categories[0]
           const isOpen = currentCategory.match(category)
@@ -131,19 +135,33 @@ class Side extends React.Component<{
 
 class App extends React.Component {
   state = {
-    currentCategory: ''
+    currentCategory: '',
+    categories: []
   }
 
   selectCategory = (nextCategory: string) => {
     this.setState({ currentCategory: nextCategory })
   }
 
+  async componentWillMount() {
+    this.refresh()
+  }
+
+  refresh = async () => {
+    const categories = await Task.categories()
+    this.setState({ categories })
+  }
+
   render() {
     const { currentCategory } = this.state
     return (
       <Container>
-        <Side currentCategory={currentCategory} onSelect={this.selectCategory} />
-        <TaskScreen currentCategory={currentCategory} />
+        <Side
+          currentCategory={currentCategory}
+          onSelect={this.selectCategory}
+          categories={this.state.categories}
+        />
+        <TaskScreen currentCategory={currentCategory} refresh={this.refresh} />
       </Container>
     )
   }
