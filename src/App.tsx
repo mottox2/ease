@@ -92,20 +92,37 @@ class Side extends React.Component<{
     return (
       <Sidebar>
         {Array.from(this.state.categories).map(([key, categories]) => {
-          return categories.map((category: string, index: number) => {
-            return (
+          if (categories.length === 0) return null
+          const category = categories[0]
+          const isOpen = currentCategory.match(category)
+          return (
+            <React.Fragment key={key}>
               <SidebarItem
                 key={category}
                 onClick={e => {
                   onSelect(category)
                 }}
                 className={category === currentCategory ? 'isActive' : ''}
-                style={{ opacity: index === 0 ? 1 : 0.4 }}
               >
                 {key === '' ? 'すべてのタスク' : category}
               </SidebarItem>
-            )
-          })
+              {isOpen &&
+                categories.map((category: string, index: number) => {
+                  if (index === 0) return null
+                  return (
+                    <SidebarItem
+                      key={category}
+                      onClick={e => {
+                        onSelect(category)
+                      }}
+                      className={category === currentCategory ? 'isActive' : ''}
+                    >
+                      {category}
+                    </SidebarItem>
+                  )
+                })}
+            </React.Fragment>
+          )
         })}
       </Sidebar>
     )
