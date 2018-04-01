@@ -1,6 +1,6 @@
 {
-  "short_name": "Ease",
-  "name": "Fantastic Todo App",
+  "short_name": "ease.do",
+  "name": "Tree bases ToDo App",
   "icons": [
     {
       "src": "favicon.ico",
@@ -15,6 +15,6 @@
   ],
   "start_url": "./",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#315096",
   "background_color": "#ffffff"
 }
