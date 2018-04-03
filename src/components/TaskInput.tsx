@@ -89,8 +89,12 @@ class TaskInput extends React.Component<Props> {
   }
 
   addTask() {
+    const title = this.state.title.replace(/#\w+/g, '').replace(/\w+\//g, '')
+    if (title.length < 1) {
+      return false
+    }
     const newTask = new Task(
-      this.state.title.replace(/#\w+/g, '').replace(/\w+\//g, ''),
+      title,
       (this.state.title.match(/\w+\//g) || []).join(''),
       this.state.description
     )
@@ -100,6 +104,7 @@ class TaskInput extends React.Component<Props> {
       description: '',
       enabledDescription: false
     })
+    return true
   }
 
   /* tslint:disable */
@@ -131,8 +136,9 @@ class TaskInput extends React.Component<Props> {
                 }
               }
               if (e.keyCode === KeyCode.ENTER && this.state.title.length > 0) {
-                this.addTask()
-                editor.setValue('')
+                if (this.addTask()) {
+                  editor.setValue('')
+                }
               }
               return true
             }}
@@ -174,6 +180,7 @@ class TaskInput extends React.Component<Props> {
                   }
                   return false
                 }
+                return true
               }}
               ref={(element: any) => {
                 if (element) {
