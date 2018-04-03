@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import TaskScreen from './components/TaskScreen'
 import { Task } from './DataBase'
 import groupBy from './utils/groupBy'
+import MaterialIcon from './components/MaterialIcon'
 
 const Container = styled.div`
   margin: 0 auto;
@@ -40,6 +41,8 @@ const SidebarItem = styled.div`
   cursor: pointer;
   font-family: Lato, sans-serif;
   font-weight: 500;
+  display: flex;
+  align-items: center;
   &:hover {
     background-color: #f5f5f5;
   }
@@ -47,20 +50,12 @@ const SidebarItem = styled.div`
   &:active {
     background-color: #f0f0f0;
     opacity: 1;
-    &:before {
-      background-color: #ddd;
+    i {
+      opacity: 0.6;
     }
   }
-  &:before {
-    content: ' ';
-    display: inline-block;
-    background-color: #eee;
-    width: 24px;
-    height: 24px;
-    position: relative;
-    top: 8px;
-    margin-right: 16px;
-    border-radius: 12px;
+  i {
+    opacity: 0.3;
   }
 `
 
@@ -108,6 +103,7 @@ class Side extends React.Component<{
                 }}
                 className={category === currentCategory ? 'isActive' : ''}
               >
+                <MaterialIcon icon="folder" style={{ marginRight: 12 }} />
                 {key === '' ? 'すべてのタスク' : category}
               </SidebarItem>
               {isOpen &&
@@ -121,6 +117,7 @@ class Side extends React.Component<{
                       }}
                       className={category === currentCategory ? 'isActive' : ''}
                     >
+                      <MaterialIcon icon="chevron_right" style={{ marginRight: 12 }} />
                       {category}
                     </SidebarItem>
                   )
