@@ -12,11 +12,27 @@ const Placeholder = styled.div`
   opacity: 0.3;
 `
 
+const DescriptionTextarea = styled.div`
+  textarea {
+    width: 100%;
+    border: 2px solid #ccc;
+    border-top: 0;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    opacity: 0.8;
+    font-size: 14px;
+    &:focus {
+      outline: none;
+      border-color: #18aa3b;
+    }
+  }
+`
+
 class TaskInput extends React.Component<{ addTask: Function }> {
   state = {
     title: '',
-    description: '',
-    enabledDescription: false
+    description: 'OffilineCache+IndexedDBを利用したToDoアプリケーション',
+    enabledDescription: true
   }
 
   componentWillMount() {
@@ -59,7 +75,7 @@ class TaskInput extends React.Component<{ addTask: Function }> {
           }}
           options={{ mode: 'custom' }}
           onKeyDown={(editor, e: any) => {
-            if (e.keyCode === 13 && e.metaKey) {
+            if (e.keyCode === 13 && (e.metaKey || e.ctrlKey || e.shiftKey)) {
               this.setState({ enabledDescription: true })
               return
             }
@@ -78,26 +94,25 @@ class TaskInput extends React.Component<{ addTask: Function }> {
         />
         {this.state.title.length < 1 && <Placeholder>Category/TaskName</Placeholder>}
         {this.state.enabledDescription && (
-          <textarea
-            style={{
-              width: '100%',
-              border: '2px solid #ccc',
-              borderTop: 0,
-              boxSizing: 'border-box'
-            }}
-            value={this.state.description}
-            onChange={(e: any) => this.setState({ description: e.target.value })}
-            onKeyDown={(e: any) => {
-              if (e.keyCode === 13 && this.state.description.length > 0) {
-                this.addTask()
-              }
-            }}
-            ref={(element: any) => {
-              if (element) {
-                element.focus()
-              }
-            }}
-          />
+          <DescriptionTextarea>
+            <textarea
+              value={this.state.description}
+              onChange={(e: any) => this.setState({ description: e.target.value })}
+              onKeyDown={(e: any) => {
+                if (e.keyCode === 13 && (e.metaKey || e.ctrlKey || e.shiftKey)) {
+                  return true
+                }
+                if (e.keyCode === 13) {
+                  return this.addTask()
+                }
+              }}
+              ref={(element: any) => {
+                if (element) {
+                  element.focus()
+                }
+              }}
+            />
+          </DescriptionTextarea>
         )}
       </React.Fragment>
     )
