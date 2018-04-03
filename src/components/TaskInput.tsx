@@ -36,7 +36,12 @@ const DescriptionTextarea = styled.div`
   }
 `
 
-class TaskInput extends React.Component<{ addTask: Function }> {
+interface Props {
+  addTask: Function
+  setHeight: Function
+}
+
+class TaskInput extends React.Component<Props> {
   state = {
     title: '',
     description: '',
@@ -44,6 +49,7 @@ class TaskInput extends React.Component<{ addTask: Function }> {
     hasFocus: false
   }
 
+  wrapper?: HTMLElement
   textarea?: HTMLElement
 
   componentWillMount() {
@@ -63,6 +69,12 @@ class TaskInput extends React.Component<{ addTask: Function }> {
     })
   }
 
+  componentDidMount() {
+    if (this.wrapper) {
+      this.props.setHeight(this.wrapper.offsetHeight)
+    }
+  }
+
   addTask() {
     const newTask = new Task(
       this.state.title.replace(/#\w+/g, '').replace(/\w+\//g, ''),
@@ -80,63 +92,77 @@ class TaskInput extends React.Component<{ addTask: Function }> {
   render() {
     const { enabledDescription, title, description, hasFocus } = this.state
     return (
-      <Wrapper style={{ borderColor: hasFocus ? '#18AA3B' : '#ddd' }}>
-        <CodeMirror
-          editorDidMount={(editor: any) => {
-            editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
-          }}
-          options={{ mode: 'custom' }}
-          onKeyDown={(editor, e: any) => {
-            if (e.keyCode === 13 && (e.metaKey || e.ctrlKey || e.shiftKey)) {
-              this.setState({ enabledDescription: true })
-              if (this.textarea) {
-                this.textarea.focus()
-                e.preventDefault()
-                return false
-              }
-            }
-            if (e.keyCode === 13 && title.length > 0) {
-              this.addTask()
-              editor.setValue('')
-            }
-            return true
-          }}
-          value={title}
-          onBeforeChange={(_editor, change: any, value) => {
-            const newtext = change.text.join('').replace(/\n/g, '')
-            change.update(change.from, change.to, [newtext])
-            this.setState({ title: value.replace(/\n/g, '') })
-            return true
-          }}
-          onFocus={() => this.setState({ hasFocus: true })}
-          onBlur={() => this.setState({ hasFocus: false })}
-        />
-        {title.length < 1 && <Placeholder>Category/TaskName</Placeholder>}
-        <DescriptionTextarea style={{ display: enabledDescription ? 'block' : 'none' }}>
-          <TextareaAutosize
-            rows={2}
-            value={description}
-            placeholder="Task description"
-            onChange={(e: any) => this.setState({ description: e.target.value })}
-            onKeyDown={(e: any) => {
-              if (e.keyCode === 13) {
-                if (e.metaKey || e.ctrlKey || e.shiftKey) {
-                  return true
-                }
-                return this.addTask()
-              }
+      <div
+        style={{ position: 'relative', padding: '12px' }}
+        ref={(element: any) => {
+          if (element) {
+            this.wrapper = element
+          }
+        }}
+      >
+        <Wrapper style={{ borderColor: hasFocus ? '#18AA3B' : '#ddd' }}>
+          <CodeMirror
+            editorDidMount={(editor: any) => {
+              editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
             }}
-            ref={(element: any) => {
-              console.log(element)
-              if (element) {
-                this.textarea = element.textarea
+            options={{ mode: 'custom' }}
+            onKeyDown={(editor, e: any) => {
+              if (e.keyCode === 13 && (e.metaKey || e.ctrlKey || e.shiftKey)) {
+                this.setState({ enabledDescription: true })
+                if (this.textarea) {
+                  this.textarea.focus()
+                  e.preventDefault()
+                  return false
+                }
               }
+              if (e.keyCode === 13 && title.length > 0) {
+                this.addTask()
+                editor.setValue('')
+              }
+              return true
+            }}
+            value={title}
+            onBeforeChange={(_editor, change: any, value) => {
+              const newtext = change.text.join('').replace(/\n/g, '')
+              change.update(change.from, change.to, [newtext])
+              this.setState({ title: value.replace(/\n/g, '') })
+              return true
             }}
             onFocus={() => this.setState({ hasFocus: true })}
             onBlur={() => this.setState({ hasFocus: false })}
           />
-        </DescriptionTextarea>
-      </Wrapper>
+          {title.length < 1 && <Placeholder>Category/TaskName</Placeholder>}
+          <DescriptionTextarea style={{ display: enabledDescription ? 'block' : 'none' }}>
+            <TextareaAutosize
+              rows={2}
+              onResize={(e: any) => {
+                if (this.wrapper) {
+                  console.log(this.wrapper.offsetHeight)
+                  this.props.setHeight(this.wrapper.offsetHeight)
+                }
+              }}
+              value={description}
+              placeholder="Task description"
+              onChange={(e: any) => this.setState({ description: e.target.value })}
+              onKeyDown={(e: any) => {
+                if (e.keyCode === 13) {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey) {
+                    return true
+                  }
+                  return this.addTask()
+                }
+              }}
+              ref={(element: any) => {
+                if (element) {
+                  this.textarea = element.textarea
+                }
+              }}
+              onFocus={() => this.setState({ hasFocus: true })}
+              onBlur={() => this.setState({ hasFocus: false })}
+            />
+          </DescriptionTextarea>
+        </Wrapper>
+      </div>
     )
   }
 }

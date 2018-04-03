@@ -32,11 +32,13 @@ const Main = styled.div`
 const ScrollArea = styled.div`
   padding: 24px;
   padding-right: 0;
+  padding-bottom: 0;
   @media screen and (max-width: 776px) {
     padding-left: 12px;
   }
   overflow-y: auto;
-  height: calc(100% - 48px - 30px);
+  height: calc(100% - 117px);
+  box-sizing: border-box;
 `
 
 const InputWrapper = styled.div`
@@ -45,12 +47,12 @@ const InputWrapper = styled.div`
   left: 0;
   right: 0;
   background-color: white;
-  padding: 12px;
 `
 
 interface State {
   tasks: Object
   categorizedIds: Map<string, Array<number>>
+  inputHeight: number
 }
 
 interface Props {
@@ -61,7 +63,8 @@ interface Props {
 class App extends React.Component<Props, State> {
   state = {
     tasks: [],
-    categorizedIds: new Map()
+    categorizedIds: new Map(),
+    inputHeight: 0
   }
 
   addTask = (task: Task) => {
@@ -76,6 +79,10 @@ class App extends React.Component<Props, State> {
       this.props.refresh()
       this.fetchTask()
     })
+  }
+
+  setHeight = (height: number) => {
+    this.setState({ inputHeight: height })
   }
 
   async fetchTask(path: string = this.props.currentCategory) {
@@ -116,10 +123,10 @@ class App extends React.Component<Props, State> {
   }
 
   render() {
-    const { tasks } = this.state
+    const { tasks, inputHeight } = this.state
     return (
       <Main>
-        <ScrollArea>
+        <ScrollArea style={{ height: `calc(100% - ${inputHeight}px)` }}>
           {Array.from(this.state.categorizedIds)
             .sort()
             .map(([key, taskIds]) => {
@@ -145,7 +152,7 @@ class App extends React.Component<Props, State> {
             })}
         </ScrollArea>
         <InputWrapper>
-          <TaskInput addTask={this.addTask} />
+          <TaskInput addTask={this.addTask} setHeight={this.setHeight} />
         </InputWrapper>
       </Main>
     )

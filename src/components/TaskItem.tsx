@@ -73,6 +73,10 @@ export default styled(TaskItem)`
   animation: fadeIn 0.4s ease-out;
   display: flex;
   align-items: center;
+  &:last-child {
+    margin-bottom: 0;
+    border-bottom: 0;
+  }
   .checkbox {
     margin-right: 12px;
     cursor: pointer;
