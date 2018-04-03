@@ -5,6 +5,11 @@ import { defineMode } from 'codemirror'
 import TextareaAutosize from 'react-autosize-textarea'
 import { Task } from '../DataBase'
 
+enum KeyCode {
+  ENTER = 13,
+  ESC = 27
+}
+
 const Wrapper = styled.div`
   border: 2px solid #ddd;
   border-radius: 4px;
@@ -50,6 +55,7 @@ class TaskInput extends React.Component<Props> {
   }
 
   wrapper?: HTMLElement
+  editor?: HTMLElement
   textarea?: HTMLElement
 
   componentWillMount() {
@@ -89,6 +95,7 @@ class TaskInput extends React.Component<Props> {
     })
   }
 
+  /* tslint:disable */
   render() {
     const { enabledDescription, title, description, hasFocus } = this.state
     return (
@@ -103,11 +110,12 @@ class TaskInput extends React.Component<Props> {
         <Wrapper style={{ borderColor: hasFocus ? '#18AA3B' : '#ddd' }}>
           <CodeMirror
             editorDidMount={(editor: any) => {
+              this.editor = editor
               editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
             }}
             options={{ mode: 'custom' }}
             onKeyDown={(editor, e: any) => {
-              if (e.keyCode === 13 && (e.metaKey || e.ctrlKey || e.shiftKey)) {
+              if (e.keyCode === KeyCode.ENTER && (e.metaKey || e.ctrlKey || e.shiftKey)) {
                 this.setState({ enabledDescription: true })
                 if (this.textarea) {
                   this.textarea.focus()
@@ -139,7 +147,6 @@ class TaskInput extends React.Component<Props> {
               rows={2}
               onResize={(e: any) => {
                 if (this.wrapper) {
-                  console.log(this.wrapper.offsetHeight)
                   this.props.setHeight(this.wrapper.offsetHeight)
                 }
               }}
@@ -147,11 +154,18 @@ class TaskInput extends React.Component<Props> {
               placeholder="Task description"
               onChange={(e: any) => this.setState({ description: e.target.value })}
               onKeyDown={(e: any) => {
-                if (e.keyCode === 13) {
+                if (e.keyCode === KeyCode.ENTER) {
                   if (e.metaKey || e.ctrlKey || e.shiftKey) {
                     return true
                   }
                   return this.addTask()
+                }
+                if (e.keyCode === KeyCode.ESC && description === '') {
+                  this.setState({ enabledDescription: false })
+                  if (this.editor) {
+                    this.editor.focus()
+                  }
+                  return false
                 }
               }}
               ref={(element: any) => {
