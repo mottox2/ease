@@ -130,7 +130,7 @@ class TaskInput extends React.Component<Props> {
                   return false
                 }
               }
-              if (e.keyCode === 13 && title.length > 0) {
+              if (e.keyCode === KeyCode.ENTER && this.state.title.length > 0) {
                 this.addTask()
                 editor.setValue('')
               }
