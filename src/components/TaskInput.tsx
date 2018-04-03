@@ -124,7 +124,9 @@ class TaskInput extends React.Component<Props> {
             value={title}
             onBeforeChange={(_editor, change: any, value) => {
               const newtext = change.text.join('').replace(/\n/g, '')
-              change.update(change.from, change.to, [newtext])
+              if (change.update) {
+                change.update(change.from, change.to, [newtext])
+              }
               this.setState({ title: value.replace(/\n/g, '') })
               return true
             }}
