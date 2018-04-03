@@ -76,9 +76,7 @@ class TaskInput extends React.Component<Props> {
   }
 
   componentDidMount() {
-    if (this.wrapper) {
-      this.props.setHeight(this.wrapper.offsetHeight)
-    }
+    this.setHeight()
 
     window.addEventListener('keydown', (e: KeyboardEvent) => {
       const tagName = document.activeElement.tagName
@@ -86,6 +84,12 @@ class TaskInput extends React.Component<Props> {
         this.editor.focus()
       }
     })
+  }
+
+  setHeight() {
+    if (this.wrapper) {
+      this.props.setHeight(this.wrapper.offsetHeight)
+    }
   }
 
   addTask() {
@@ -159,9 +163,7 @@ class TaskInput extends React.Component<Props> {
             <TextareaAutosize
               rows={2}
               onResize={(e: any) => {
-                if (this.wrapper) {
-                  this.props.setHeight(this.wrapper.offsetHeight)
-                }
+                this.setHeight()
               }}
               value={description}
               placeholder="Task description"
@@ -177,6 +179,7 @@ class TaskInput extends React.Component<Props> {
                   this.setState({ enabledDescription: false })
                   if (this.editor) {
                     this.editor.focus()
+                    this.setHeight()
                   }
                   return false
                 }
