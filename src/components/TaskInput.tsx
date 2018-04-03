@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Controlled as CodeMirror } from 'react-codemirror2'
 import { defineMode } from 'codemirror'
+import TextareaAutosize from 'react-autosize-textarea'
 import { Task } from '../DataBase'
 
 const Wrapper = styled.div`
@@ -21,12 +22,14 @@ const DescriptionTextarea = styled.div`
   textarea {
     width: 100%;
     box-sizing: border-box;
-    padding: 6px 8px;
+    padding: 8px;
     opacity: 0.8;
     font-size: 14px;
     border: 0;
     border-top: 1px solid #ddd;
     display: block;
+    resize: none;
+    line-height: 1.4;
     &:focus {
       outline: none;
     }
@@ -110,7 +113,8 @@ class TaskInput extends React.Component<{ addTask: Function }> {
         />
         {title.length < 1 && <Placeholder>Category/TaskName</Placeholder>}
         <DescriptionTextarea style={{ display: enabledDescription ? 'block' : 'none' }}>
-          <textarea
+          <TextareaAutosize
+            rows={2}
             value={description}
             placeholder="Task description"
             onChange={(e: any) => this.setState({ description: e.target.value })}
@@ -123,8 +127,9 @@ class TaskInput extends React.Component<{ addTask: Function }> {
               }
             }}
             ref={(element: any) => {
+              console.log(element)
               if (element) {
-                this.textarea = element
+                this.textarea = element.textarea
               }
             }}
             onFocus={() => this.setState({ hasFocus: true })}

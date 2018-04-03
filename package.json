@@ -4,11 +4,13 @@
   "private": true,
   "dependencies": {
     "@types/codemirror": "^0.0.55",
+    "@types/prop-types": "^15.5.2",
     "codemirror": "^5.35.0",
     "dexie": "^2.0.2",
     "dexie-relationships": "^1.2.9",
     "normalize.css": "^8.0.0",
     "react": "^16.2.0",
+    "react-autosize-textarea": "^3.0.2",
     "react-codemirror2": "^4.2.0",
     "react-dom": "^16.2.0",
     "react-scripts-ts": "2.14.0",
