@@ -21,9 +21,9 @@ body {
 }
 
 .CodeMirror {
-  border: 2px solid #ccc;
-  border-radius: 4px;
+  border: 0;
   padding: 6px 8px;
+  font-size: 13px;
 }
 
 .CodeMirror>* {
@@ -32,6 +32,10 @@ body {
 
 .CodeMirror-focused {
   border-color: #18AA3B;
+}
+
+.CodeMirror pre {
+  padding: 0;
 }
 
 .CodeMirror-scroll {
