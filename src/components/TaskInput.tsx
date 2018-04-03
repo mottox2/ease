@@ -79,6 +79,13 @@ class TaskInput extends React.Component<Props> {
     if (this.wrapper) {
       this.props.setHeight(this.wrapper.offsetHeight)
     }
+
+    window.addEventListener('keydown', (e: KeyboardEvent) => {
+      const tagName = document.activeElement.tagName
+      if (tagName !== 'TEXTAREA' && this.editor) {
+        this.editor.focus()
+      }
+    })
   }
 
   addTask() {
