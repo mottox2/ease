@@ -80,6 +80,9 @@ class TaskInput extends React.Component<Props> {
 
     window.addEventListener('keydown', (e: KeyboardEvent) => {
       const tagName = document.activeElement.tagName
+      if (e.metaKey || e.ctrlKey || e.shiftKey) {
+        return
+      }
       if (tagName !== 'TEXTAREA' && this.editor) {
         this.editor.focus()
       }
