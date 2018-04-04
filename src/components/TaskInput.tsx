@@ -93,7 +93,7 @@ class TaskInput extends React.Component<Props> {
   }
 
   addTask() {
-    const title = this.state.title.replace(/#\w+/g, '').replace(/\w+\//g, '')
+    const title = this.state.title.replace(/\w+\//g, '')
     if (title.length < 1) {
       return false
     }
@@ -111,6 +111,10 @@ class TaskInput extends React.Component<Props> {
     return true
   }
 
+  isValid() {
+    return this.state.title.replace(/\w+\//g, '').length > 0
+  }
+
   /* tslint:disable */
   render() {
     const { enabledDescription, title, description, hasFocus } = this.state
@@ -123,7 +127,11 @@ class TaskInput extends React.Component<Props> {
           }
         }}
       >
-        <Wrapper style={{ borderColor: hasFocus ? '#18AA3B' : '#ddd' }}>
+        <Wrapper
+          style={{
+            borderColor: hasFocus ? (this.isValid() ? '#18AA3B' : '#888') : '#ddd'
+          }}
+        >
           <CodeMirror
             editorDidMount={(editor: any) => {
               this.editor = editor
