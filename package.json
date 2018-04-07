@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/codemirror": "^0.0.55",
     "@types/prop-types": "^15.5.2",
     "codemirror": "^5.35.0",
     "dexie": "^2.0.2",
@@ -23,6 +22,7 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
+    "@types/codemirror": "^0.0.56",
     "@types/jest": "^22.2.0",
     "@types/node": "^9.4.7",
     "@types/react": "^16.0.40",

@@ -1,9 +1,17 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Controlled as CodeMirror } from 'react-codemirror2'
-import { defineMode } from 'codemirror'
+import { defineMode, Pos } from 'codemirror'
+import 'codemirror/addon/hint/show-hint'
+
 import TextareaAutosize from 'react-autosize-textarea'
 import { Task } from '../DataBase'
+
+declare global {
+  interface Window {
+    editor: any
+  }
+}
 
 enum KeyCode {
   ENTER = 13,
@@ -119,6 +127,26 @@ class TaskInput extends React.Component<Props> {
   }
 
   /* tslint:disable */
+  autocomplete = (cm: any) => {
+    const editor: any = this.editor
+    if (!editor) return
+    const cur = cm.getCursor()
+    const token = cm.getTokenAt(cur)
+    const start = token.start
+    const end = token.end
+    const from = Pos(cur.line, start)
+    const to = Pos(cur.line, end)
+
+    cm.showHint({
+      hint: () => ({
+        list: ['aa', 'bb', 'aaa'],
+        from,
+        to
+      })
+    })
+  }
+
+  /* tslint:disable */
   render() {
     const { enabledDescription, title, description, hasFocus } = this.state
     return (
@@ -138,9 +166,16 @@ class TaskInput extends React.Component<Props> {
           <CodeMirror
             editorDidMount={(editor: any) => {
               this.editor = editor
+              window.editor = editor
               editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
             }}
-            options={{ mode: 'custom' }}
+            ref="editor"
+            options={{
+              mode: 'custom',
+              extraKeys: {
+                Tab: 'autocomplete'
+              }
+            }}
             onKeyDown={(editor, e: any) => {
               if (e.keyCode === KeyCode.ENTER && (e.metaKey || e.ctrlKey || e.shiftKey)) {
                 this.setState({ enabledDescription: true })
@@ -164,6 +199,7 @@ class TaskInput extends React.Component<Props> {
                 change.update(change.from, change.to, [newtext])
               }
               this.setState({ title: value.replace(/\n/g, '') })
+              this.autocomplete(this.editor)
               return true
             }}
             onFocus={() => this.setState({ hasFocus: true })}
