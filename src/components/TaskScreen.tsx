@@ -58,6 +58,7 @@ interface State {
 interface Props {
   currentCategory: string
   refresh: Function
+  categories: Array<string>
 }
 
 class App extends React.Component<Props, State> {
@@ -152,7 +153,11 @@ class App extends React.Component<Props, State> {
             })}
         </ScrollArea>
         <InputWrapper>
-          <TaskInput addTask={this.addTask} setHeight={this.setHeight} />
+          <TaskInput
+            addTask={this.addTask}
+            setHeight={this.setHeight}
+            categories={this.props.categories}
+          />
         </InputWrapper>
       </Main>
     )
