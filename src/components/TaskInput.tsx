@@ -177,6 +177,10 @@ class TaskInput extends React.Component<Props> {
               }
             }}
             onKeyDown={(editor, e: any) => {
+              console.log(editor.state.completionActive)
+              if (editor.state.completionActive) {
+                return true
+              }
               if (e.keyCode === KeyCode.ENTER && (e.metaKey || e.ctrlKey || e.shiftKey)) {
                 this.setState({ enabledDescription: true })
                 if (this.textarea) {
