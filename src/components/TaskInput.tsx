@@ -136,9 +136,12 @@ class TaskInput extends React.Component<Props> {
     const from = Pos(cur.line, 0)
     const to = Pos(cur.line, end)
 
-    const list = this.props.categories.filter(
-      c => c.indexOf(this.state.title) === 0 && c !== this.state.title
-    )
+    const list =
+      this.state.title.length < 1
+        ? []
+        : this.props.categories.filter(
+            c => c.indexOf(this.state.title) === 0 && c !== this.state.title
+          )
 
     cm.showHint({
       hint: () => ({
