@@ -52,6 +52,7 @@ const DescriptionTextarea = styled.div`
 interface Props {
   addTask: Function
   setHeight: Function
+  categories: Array<string>
 }
 
 class TaskInput extends React.Component<Props> {
@@ -63,7 +64,7 @@ class TaskInput extends React.Component<Props> {
   }
 
   wrapper?: HTMLElement
-  editor?: HTMLElement
+  editor?: CodeMirror.Editor
   textarea?: HTMLElement
 
   componentWillMount() {
@@ -136,13 +137,17 @@ class TaskInput extends React.Component<Props> {
     const end = token.end
     const from = Pos(cur.line, start)
     const to = Pos(cur.line, end)
+    const list = this.props.categories.filter(
+      c => c.indexOf(this.state.title) === 0 && c !== this.state.title
+    )
 
     cm.showHint({
       hint: () => ({
-        list: ['aa', 'bb', 'aaa'],
+        list,
         from,
         to
-      })
+      }),
+      completeSingle: false
     })
   }
 
@@ -164,21 +169,19 @@ class TaskInput extends React.Component<Props> {
           }}
         >
           <CodeMirror
-            editorDidMount={(editor: any) => {
+            editorDidMount={(editor: CodeMirror.Editor) => {
               this.editor = editor
               window.editor = editor
               editor.setSize(null, editor.defaultTextHeight() + 2 * 4)
             }}
             ref="editor"
             options={{
-              mode: 'custom',
-              extraKeys: {
-                Tab: 'autocomplete'
-              }
+              mode: 'custom'
             }}
-            onKeyDown={(editor, e: any) => {
+            onKeyDown={(editor: CodeMirror.Editor, e: any) => {
               console.log(editor.state.completionActive)
-              if (editor.state.completionActive) {
+              const completion = editor.state.completionActive
+              if (completion && completion.data.list.length > 0) {
                 return true
               }
               if (e.keyCode === KeyCode.ENTER && (e.metaKey || e.ctrlKey || e.shiftKey)) {
@@ -197,14 +200,17 @@ class TaskInput extends React.Component<Props> {
               return true
             }}
             value={title}
-            onBeforeChange={(_editor, change: any, value) => {
+            onBeforeChange={(_editor: CodeMirror.Editor, change: any, value) => {
+              console.log(change)
               const newtext = change.text.join('').replace(/\n/g, '')
               if (change.update) {
                 change.update(change.from, change.to, [newtext])
               }
               this.setState({ title: value.replace(/\n/g, '') })
-              this.autocomplete(this.editor)
               return true
+            }}
+            onChange={() => {
+              this.autocomplete(this.editor)
             }}
             onFocus={() => this.setState({ hasFocus: true })}
             onBlur={() => this.setState({ hasFocus: false })}

@@ -150,15 +150,19 @@ class App extends React.Component {
   }
 
   render() {
-    const { currentCategory } = this.state
+    const { currentCategory, categories } = this.state
     return (
       <Container>
         <Side
           currentCategory={currentCategory}
           onSelect={this.selectCategory}
-          categories={this.state.categories}
+          categories={categories}
         />
-        <TaskScreen currentCategory={currentCategory} refresh={this.refresh} />
+        <TaskScreen
+          currentCategory={currentCategory}
+          refresh={this.refresh}
+          categories={categories}
+        />
       </Container>
     )
   }
