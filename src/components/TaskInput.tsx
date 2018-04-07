@@ -132,11 +132,10 @@ class TaskInput extends React.Component<Props> {
     const editor: any = this.editor
     if (!editor) return
     const cur = cm.getCursor()
-    const token = cm.getTokenAt(cur)
-    const start = token.start
-    const end = token.end
-    const from = Pos(cur.line, start)
+    const end = cur.ch
+    const from = Pos(cur.line, 0)
     const to = Pos(cur.line, end)
+
     const list = this.props.categories.filter(
       c => c.indexOf(this.state.title) === 0 && c !== this.state.title
     )
@@ -201,7 +200,6 @@ class TaskInput extends React.Component<Props> {
             }}
             value={title}
             onBeforeChange={(_editor: CodeMirror.Editor, change: any, value) => {
-              console.log(change)
               const newtext = change.text.join('').replace(/\n/g, '')
               if (change.update) {
                 change.update(change.from, change.to, [newtext])
