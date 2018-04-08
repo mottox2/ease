@@ -1,7 +1,8 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Controlled as CodeMirror } from 'react-codemirror2'
-import { defineMode, Pos } from 'codemirror'
+import { Pos } from 'codemirror'
+import '../utils/codeMirrorCustomMode'
 import 'codemirror/addon/hint/show-hint'
 
 import TextareaAutosize from 'react-autosize-textarea'
@@ -66,23 +67,6 @@ class TaskInput extends React.Component<Props> {
   wrapper?: HTMLElement
   editor?: CodeMirror.Editor
   textarea?: HTMLElement
-
-  componentWillMount() {
-    defineMode('custom', () => {
-      return {
-        token: (stream: any, state: any) => {
-          if (stream.match(/#\w+/)) {
-            return 'keyword'
-          }
-          if (stream.match(/\w+\//)) {
-            return 'comment'
-          }
-          stream.next()
-          return null
-        }
-      }
-    })
-  }
 
   componentDidMount() {
     this.setHeight()
