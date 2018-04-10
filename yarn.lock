@@ -5856,6 +5856,10 @@ react-scripts-ts@2.14.0:
   optionalDependencies:
     fsevents "1.1.2"
 
+react-waterfall@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-waterfall/-/react-waterfall-3.0.2.tgz#26a75b86a9909479c1a857d7c0a6c2fc320da39a"
+
 react@^16.3.0:
   version "16.3.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.3.1.tgz#4a2da433d471251c69b6033ada30e2ed1202cfd8"
