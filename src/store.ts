@@ -1,16 +1,34 @@
 import { initStore, Store } from 'react-waterfall'
 
-const store: Store = {
+interface State {
+  categories: Array<string>
+  currentCategory: string
+}
+
+interface Actions {
+  setCategories: (newCategories: Array<any>) => State
+  setCategory: (category: string) => State
+}
+
+const store: Store<State, Actions> = {
   initialState: {
-    categories: []
+    categories: [],
+    currentCategory: ''
   },
   actions: {
     setCategories: ({}, newCategories: Array<any>) => {
       return {
         categories: newCategories
       }
+    },
+    setCategory: ({}, category) => {
+      return {
+        currentCategory: category
+      }
     }
   }
 }
+
+// const a: StoreActions<State, Actions> = store.actions
 
 export const { Provider, Consumer, actions, getState } = initStore(store)

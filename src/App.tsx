@@ -4,6 +4,7 @@ import TaskScreen from './components/TaskScreen'
 import { Task } from './DataBase'
 import groupBy from './utils/groupBy'
 import MaterialIcon from './components/MaterialIcon'
+import { actions, getState, Provider } from './store'
 
 const Container = styled.div`
   margin: 0 auto;
@@ -144,8 +145,12 @@ class App extends React.Component {
     this.refresh()
   }
 
+  /* tslint:disable */
   refresh = async () => {
     const categories = await Task.categories()
+    actions.setCategories(categories)
+    // actions.setCategory('')
+    console.log(getState())
     this.setState({ categories })
   }
 
@@ -153,16 +158,18 @@ class App extends React.Component {
     const { currentCategory, categories } = this.state
     return (
       <Container>
-        <Side
-          currentCategory={currentCategory}
-          onSelect={this.selectCategory}
-          categories={categories}
-        />
-        <TaskScreen
-          currentCategory={currentCategory}
-          refresh={this.refresh}
-          categories={categories}
-        />
+        <Provider>
+          <Side
+            currentCategory={currentCategory}
+            onSelect={this.selectCategory}
+            categories={categories}
+          />
+          <TaskScreen
+            currentCategory={currentCategory}
+            refresh={this.refresh}
+            categories={categories}
+          />
+        </Provider>
       </Container>
     )
   }
