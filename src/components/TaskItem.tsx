@@ -1,5 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import linkifyUrls from 'linkify-urls'
 import { Task } from '../DataBase'
 import MaterialIcon from './MaterialIcon'
 
@@ -47,7 +48,14 @@ const TaskItem: React.StatelessComponent<{
       <div className="content">
         {displayCategory.length > 0 && <div className="category">{displayCategory}</div>}
         <div className="title">{task.title}</div>
-        {task.description.length > 0 && <p className="description">{task.description}</p>}
+        {task.description.length > 0 && (
+          <p
+            className="description"
+            dangerouslySetInnerHTML={{
+              __html: linkifyUrls(task.description, { attributes: { target: '_blank' } })
+            }}
+          />
+        )}
       </div>
       <div className="actions">
         {/* <MaterialIcon icon="edit" style={{ top: 1 }} /> */}
