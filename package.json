@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/prop-types": "^15.5.2",
+    "@types/recompose": "^0.24.7",
     "codemirror": "^5.35.0",
     "dexie": "^2.0.2",
     "dexie-relationships": "^1.2.9",
@@ -15,6 +16,7 @@
     "react-dom": "^16.3.0",
     "react-scripts-ts": "2.14.0",
     "react-waterfall": "^3.0.2",
+    "recompose": "^0.26.0",
     "styled-components": "^3.2.3"
   },
   "scripts": {

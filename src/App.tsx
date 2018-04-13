@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import TaskScreen from './components/TaskScreen'
 import Side from './components/Side'
 import { actions, Provider } from './store'
+import { lifecycle } from 'recompose'
 
 const Container = styled.div`
   margin: 0 auto;
@@ -32,30 +33,24 @@ const Title = styled.h1`
   font-family: Lato, sans-serif;
 `
 
-class App extends React.Component {
+const App = lifecycle({
   componentWillMount() {
     actions.loadCategories()
   }
-
-  render() {
-    return (
-      <Container>
-        <Side />
-        <TaskScreen />
-      </Container>
-    )
-  }
-}
+})(() => (
+  <Container>
+    <Side />
+    <TaskScreen />
+  </Container>
+))
 
 const Layout: React.SFC<{}> = () => (
-  <React.Fragment>
-    <Provider>
-      <Header>
-        <Title>ease.do</Title>
-      </Header>
-      <App />
-    </Provider>
-  </React.Fragment>
+  <Provider>
+    <Header>
+      <Title>ease.do</Title>
+    </Header>
+    <App />
+  </Provider>
 )
 
 export default Layout

@@ -51,10 +51,8 @@ class Side extends React.Component<{}> {
       >
         {({ categories, currentCategory }: any) => (
           <Sidebar>
-            {console.log(categories, currentCategory)}
             {Array.from(groupBy(categories, (c: string) => c.split('/')[0])).map(
               ([key, categories]) => {
-                console.log(categories, currentCategory)
                 if (categories.length === 0) return null
                 const category = categories[0]
                 const isOpen = currentCategory.match(category)
