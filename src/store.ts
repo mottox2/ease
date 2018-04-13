@@ -29,6 +29,4 @@ const store: Store<State, Actions> = {
   }
 }
 
-// const a: StoreActions<State, Actions> = store.actions
-
 export const { Provider, Consumer, actions, getState } = initStore(store)

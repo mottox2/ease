@@ -19,8 +19,10 @@ declare module 'react-waterfall' {
     store: Store<S, A>,
     middleware?: any
   ): {
-    Provider: React.ComponentClass
-    Consumer: React.ComponentClass
+    Provider: React.ComponentClass<{}>
+    Consumer: React.ComponentClass<{
+      mapStateToProps: Function
+    }>
     actions: Actions<A>
     getState: () => States<S>
   }

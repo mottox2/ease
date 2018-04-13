@@ -4,7 +4,7 @@ import TaskScreen from './components/TaskScreen'
 import { Task } from './DataBase'
 import groupBy from './utils/groupBy'
 import MaterialIcon from './components/MaterialIcon'
-import { actions, getState, Provider } from './store'
+import { actions, getState, Provider, Consumer } from './store'
 
 const Container = styled.div`
   margin: 0 auto;
@@ -88,44 +88,59 @@ class Side extends React.Component<{
 
   /* tslint:disable */
   render() {
-    const { currentCategory, onSelect } = this.props
+    const { onSelect } = this.props
     return (
       <Sidebar>
-        {Array.from(this.state.mapedCategories).map(([key, categories]) => {
-          if (categories.length === 0) return null
-          const category = categories[0]
-          const isOpen = currentCategory.match(category)
-          return (
-            <React.Fragment key={key}>
-              <SidebarItem
-                key={category}
-                onClick={e => {
-                  onSelect(category)
-                }}
-                className={category === currentCategory ? 'isActive' : ''}
-              >
-                <MaterialIcon icon="folder" style={{ marginRight: 12 }} />
-                {key === '' ? 'すべてのタスク' : category}
-              </SidebarItem>
-              {isOpen &&
-                categories.map((category: string, index: number) => {
-                  if (index === 0) return null
+        <Consumer
+          mapStateToProps={(state: any) => ({
+            categories: state.categories,
+            currentCategory: state.currentCategory
+          })}
+        >
+          {({ categories, currentCategory }: any) => (
+            <>
+              {console.log(categories, currentCategory)}
+              {Array.from(groupBy(categories, (c: string) => c.split('/')[0])).map(
+                ([key, categories]) => {
+                  console.log(categories, currentCategory)
+                  if (categories.length === 0) return null
+                  const category = categories[0]
+                  const isOpen = currentCategory.match(category)
                   return (
-                    <SidebarItem
-                      key={category}
-                      onClick={e => {
-                        onSelect(category)
-                      }}
-                      className={category === currentCategory ? 'isActive' : ''}
-                    >
-                      <MaterialIcon icon="chevron_right" style={{ marginRight: 12 }} />
-                      {category}
-                    </SidebarItem>
+                    <React.Fragment key={key}>
+                      <SidebarItem
+                        key={category}
+                        onClick={e => {
+                          onSelect(category)
+                        }}
+                        className={category === currentCategory ? 'isActive' : ''}
+                      >
+                        <MaterialIcon icon="folder" style={{ marginRight: 12 }} />
+                        {key === '' ? 'すべてのタスク' : category}
+                      </SidebarItem>
+                      {isOpen &&
+                        categories.map((category: string, index: number) => {
+                          if (index === 0) return null
+                          return (
+                            <SidebarItem
+                              key={category}
+                              onClick={e => {
+                                onSelect(category)
+                              }}
+                              className={category === currentCategory ? 'isActive' : ''}
+                            >
+                              <MaterialIcon icon="chevron_right" style={{ marginRight: 12 }} />
+                              {category}
+                            </SidebarItem>
+                          )
+                        })}
+                    </React.Fragment>
                   )
-                })}
-            </React.Fragment>
-          )
-        })}
+                }
+              )}
+            </>
+          )}
+        </Consumer>
       </Sidebar>
     )
   }
@@ -138,7 +153,7 @@ class App extends React.Component {
   }
 
   selectCategory = (nextCategory: string) => {
-    this.setState({ currentCategory: nextCategory })
+    actions.setCategory(nextCategory)
   }
 
   async componentWillMount() {
