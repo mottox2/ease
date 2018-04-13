@@ -2,8 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import TaskScreen from './components/TaskScreen'
 import Side from './components/Side'
-import { Task } from './DataBase'
-import { actions, getState, Provider } from './store'
+import { actions, Provider } from './store'
 
 const Container = styled.div`
   margin: 0 auto;
@@ -34,29 +33,15 @@ const Title = styled.h1`
 `
 
 class App extends React.Component {
-  state = {
-    currentCategory: ''
-  }
-
-  async componentWillMount() {
-    this.refresh()
-  }
-
-  /* tslint:disable */
-  refresh = async () => {
-    const categories = await Task.categories()
-    actions.setCategories(categories)
-    console.log(getState())
+  componentWillMount() {
+    actions.loadCategories()
   }
 
   render() {
-    const { currentCategory } = this.state
     return (
       <Container>
-        <Provider>
-          <Side />
-          <TaskScreen currentCategory={currentCategory} refresh={this.refresh} />
-        </Provider>
+        <Side />
+        <TaskScreen />
       </Container>
     )
   }
@@ -64,10 +49,12 @@ class App extends React.Component {
 
 const Layout: React.SFC<{}> = () => (
   <React.Fragment>
-    <Header>
-      <Title>ease.do</Title>
-    </Header>
-    <App />
+    <Provider>
+      <Header>
+        <Title>ease.do</Title>
+      </Header>
+      <App />
+    </Provider>
   </React.Fragment>
 )
 

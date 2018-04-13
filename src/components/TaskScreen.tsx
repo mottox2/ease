@@ -6,7 +6,7 @@ import TaskItem from './TaskItem'
 import TaskInput from './TaskInput'
 
 import groupBy from '../utils/groupBy'
-import { Consumer } from '../store'
+import { Consumer, actions } from '../store'
 
 const CategoryName = styled.div`
   animation: fadeIn 0.4s ease-out;
@@ -61,7 +61,7 @@ interface Props {
   refresh: Function
 }
 
-class App extends React.Component<Props, State> {
+class TaskScreen extends React.Component<Props, State> {
   state = {
     tasks: [],
     categorizedIds: new Map(),
@@ -175,4 +175,19 @@ class App extends React.Component<Props, State> {
   }
 }
 
-export default App
+const TaskScreenWrapper: React.SFC<{}> = (props: {}) => {
+  return (
+    <Consumer
+      mapStateToProps={(state: any) => ({
+        currentCategory: state.currentCategory,
+        categories: state.categories
+      })}
+    >
+      {({ currentCategory, categories }: any) => (
+        <TaskScreen currentCategory={currentCategory} refresh={actions.loadCategories} />
+      )}
+    </Consumer>
+  )
+}
+
+export default TaskScreenWrapper

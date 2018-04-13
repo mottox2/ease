@@ -1,4 +1,5 @@
 import { initStore, Store } from 'react-waterfall'
+import { Task } from './DataBase'
 
 interface State {
   categories: Array<string>
@@ -8,6 +9,7 @@ interface State {
 interface Actions {
   setCategories: (newCategories: Array<any>) => State
   setCategory: (category: string) => State
+  loadCategories: () => State
 }
 
 const store: Store<State, Actions> = {
@@ -25,6 +27,10 @@ const store: Store<State, Actions> = {
       return {
         currentCategory: category
       }
+    },
+    loadCategories: async ({}) => {
+      const categories = await Task.categories()
+      return { categories }
     }
   }
 }
