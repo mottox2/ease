@@ -6,6 +6,7 @@ import TaskItem from './TaskItem'
 import TaskInput from './TaskInput'
 
 import groupBy from '../utils/groupBy'
+import { Consumer, actions } from '../store'
 
 const CategoryName = styled.div`
   animation: fadeIn 0.4s ease-out;
@@ -61,7 +62,7 @@ interface Props {
   categories: Array<string>
 }
 
-class App extends React.Component<Props, State> {
+class TaskScreen extends React.Component<Props, State> {
   state = {
     tasks: [],
     categorizedIds: new Map(),
@@ -88,6 +89,7 @@ class App extends React.Component<Props, State> {
 
   async fetchTask(path: string = this.props.currentCategory) {
     const tasks = await Task.all(path)
+    console.log(path, tasks)
     const pathLevel = path.split('/').length - 1
     const groupedTasks = groupBy(
       Object.keys(tasks).map(k => tasks[k]),
@@ -109,6 +111,7 @@ class App extends React.Component<Props, State> {
   }
 
   async componentWillReceiveProps(nextProps: any) {
+    console.log(this.props, nextProps)
     if (this.props.currentCategory !== nextProps.currentCategory) {
       this.fetchTask(nextProps.currentCategory)
     }
@@ -167,4 +170,23 @@ class App extends React.Component<Props, State> {
   }
 }
 
-export default App
+const TaskScreenWrapper: React.SFC<{}> = (props: {}) => {
+  return (
+    <Consumer
+      mapStateToProps={(state: any) => ({
+        currentCategory: state.currentCategory,
+        categories: state.categories
+      })}
+    >
+      {({ currentCategory, categories }: any) => (
+        <TaskScreen
+          currentCategory={currentCategory}
+          refresh={actions.loadCategories}
+          categories={categories}
+        />
+      )}
+    </Consumer>
+  )
+}
+
+export default TaskScreenWrapper
