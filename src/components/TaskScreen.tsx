@@ -142,10 +142,13 @@ class TaskScreen extends React.Component<Props, State> {
                     <CategoryName>{key}</CategoryName>
                   )}
                   {taskIds.map((taskId: number) => {
+                    const task: Task = tasks[taskId]
+                    /* tslint:disable:curly */
+                    if (!task) return null
                     return (
                       <TaskItem
                         key={taskId}
-                        task={tasks[taskId]}
+                        task={task}
                         updateTask={this.updateTask}
                         deleteTask={this.deleteTask}
                       />
