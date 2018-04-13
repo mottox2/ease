@@ -1,10 +1,9 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import TaskScreen from './components/TaskScreen'
+import Side from './components/Side'
 import { Task } from './DataBase'
-import groupBy from './utils/groupBy'
-import MaterialIcon from './components/MaterialIcon'
-import { actions, getState, Provider, Consumer } from './store'
+import { actions, getState, Provider } from './store'
 
 const Container = styled.div`
   margin: 0 auto;
@@ -12,14 +11,6 @@ const Container = styled.div`
   height: calc(100% - 60px);
   flex: 1;
   min-width: 100%;
-`
-
-const Sidebar = styled.div`
-  width: 260px;
-  padding: 8px 0;
-  @media screen and (max-width: 776px) {
-    display: none;
-  }
 `
 
 const Header = styled.div`
@@ -33,33 +24,6 @@ const Header = styled.div`
   z-index: 10;
 `
 
-const SidebarItem = styled.div`
-  color: #3c5064;
-  padding: 0 16px;
-  opacity: 0.88;
-  font-size: 14px;
-  line-height: 48px;
-  cursor: pointer;
-  font-family: Lato, sans-serif;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  &:hover {
-    background-color: #f5f5f5;
-  }
-  &.isActive,
-  &:active {
-    background-color: #f0f0f0;
-    opacity: 1;
-    i {
-      opacity: 0.6;
-    }
-  }
-  i {
-    opacity: 0.3;
-  }
-`
-
 const Title = styled.h1`
   padding-top: 0;
   font-size: 18px;
@@ -69,77 +33,9 @@ const Title = styled.h1`
   font-family: Lato, sans-serif;
 `
 
-class Side extends React.Component<{
-  currentCategory: string
-  onSelect: Function
-}> {
-  /* tslint:disable */
-  render() {
-    const { onSelect } = this.props
-    return (
-      <Sidebar>
-        <Consumer
-          mapStateToProps={(state: any) => ({
-            categories: state.categories,
-            currentCategory: state.currentCategory
-          })}
-        >
-          {({ categories, currentCategory }: any) => (
-            <>
-              {console.log(categories, currentCategory)}
-              {Array.from(groupBy(categories, (c: string) => c.split('/')[0])).map(
-                ([key, categories]) => {
-                  console.log(categories, currentCategory)
-                  if (categories.length === 0) return null
-                  const category = categories[0]
-                  const isOpen = currentCategory.match(category)
-                  return (
-                    <React.Fragment key={key}>
-                      <SidebarItem
-                        key={category}
-                        onClick={e => {
-                          onSelect(category)
-                        }}
-                        className={category === currentCategory ? 'isActive' : ''}
-                      >
-                        <MaterialIcon icon="folder" style={{ marginRight: 12 }} />
-                        {key === '' ? 'すべてのタスク' : category}
-                      </SidebarItem>
-                      {isOpen &&
-                        categories.map((category: string, index: number) => {
-                          if (index === 0) return null
-                          return (
-                            <SidebarItem
-                              key={category}
-                              onClick={e => {
-                                onSelect(category)
-                              }}
-                              className={category === currentCategory ? 'isActive' : ''}
-                            >
-                              <MaterialIcon icon="chevron_right" style={{ marginRight: 12 }} />
-                              {category}
-                            </SidebarItem>
-                          )
-                        })}
-                    </React.Fragment>
-                  )
-                }
-              )}
-            </>
-          )}
-        </Consumer>
-      </Sidebar>
-    )
-  }
-}
-
 class App extends React.Component {
   state = {
     currentCategory: ''
-  }
-
-  selectCategory = (nextCategory: string) => {
-    actions.setCategory(nextCategory)
   }
 
   async componentWillMount() {
@@ -150,7 +46,6 @@ class App extends React.Component {
   refresh = async () => {
     const categories = await Task.categories()
     actions.setCategories(categories)
-    // actions.setCategory('')
     console.log(getState())
   }
 
@@ -159,7 +54,7 @@ class App extends React.Component {
     return (
       <Container>
         <Provider>
-          <Side currentCategory={currentCategory} onSelect={this.selectCategory} />
+          <Side />
           <TaskScreen currentCategory={currentCategory} refresh={this.refresh} />
         </Provider>
       </Container>
