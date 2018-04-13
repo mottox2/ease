@@ -6,6 +6,7 @@ import TaskItem from './TaskItem'
 import TaskInput from './TaskInput'
 
 import groupBy from '../utils/groupBy'
+import { Consumer } from '../store'
 
 const CategoryName = styled.div`
   animation: fadeIn 0.4s ease-out;
@@ -58,7 +59,6 @@ interface State {
 interface Props {
   currentCategory: string
   refresh: Function
-  categories: Array<string>
 }
 
 class App extends React.Component<Props, State> {
@@ -127,38 +127,49 @@ class App extends React.Component<Props, State> {
     const { tasks, inputHeight } = this.state
     return (
       <Main>
-        <ScrollArea style={{ height: `calc(100% - ${inputHeight}px)` }}>
-          {Array.from(this.state.categorizedIds)
-            .sort()
-            .map(([key, taskIds]) => {
-              return (
-                <React.Fragment key={key}>
-                  {key === '' ? (
-                    <CategoryName style={{ opacity: 0.3 }}>Uncategorized</CategoryName>
-                  ) : (
-                    <CategoryName>{key}</CategoryName>
-                  )}
-                  {taskIds.map((taskId: number) => {
+        <Consumer
+          mapStateToProps={(state: any) => ({
+            currentCategory: state.currentCategory,
+            categories: state.categories
+          })}
+        >
+          {({ currentCategory, categories }: any) => (
+            <>
+              <ScrollArea style={{ height: `calc(100% - ${inputHeight}px)` }}>
+                {Array.from(this.state.categorizedIds)
+                  .sort()
+                  .map(([key, taskIds]) => {
                     return (
-                      <TaskItem
-                        key={taskId}
-                        task={tasks[taskId]}
-                        updateTask={this.updateTask}
-                        deleteTask={this.deleteTask}
-                      />
+                      <React.Fragment key={key}>
+                        {key === '' ? (
+                          <CategoryName style={{ opacity: 0.3 }}>Uncategorized</CategoryName>
+                        ) : (
+                          <CategoryName>{key}</CategoryName>
+                        )}
+                        {taskIds.map((taskId: number) => {
+                          return (
+                            <TaskItem
+                              key={taskId}
+                              task={tasks[taskId]}
+                              updateTask={this.updateTask}
+                              deleteTask={this.deleteTask}
+                            />
+                          )
+                        })}
+                      </React.Fragment>
                     )
                   })}
-                </React.Fragment>
-              )
-            })}
-        </ScrollArea>
-        <InputWrapper>
-          <TaskInput
-            addTask={this.addTask}
-            setHeight={this.setHeight}
-            categories={this.props.categories}
-          />
-        </InputWrapper>
+              </ScrollArea>
+              <InputWrapper>
+                <TaskInput
+                  addTask={this.addTask}
+                  setHeight={this.setHeight}
+                  categories={categories}
+                />
+              </InputWrapper>
+            </>
+          )}
+        </Consumer>
       </Main>
     )
   }

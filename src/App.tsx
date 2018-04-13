@@ -72,20 +72,7 @@ const Title = styled.h1`
 class Side extends React.Component<{
   currentCategory: string
   onSelect: Function
-  categories: Array<string>
 }> {
-  state = {
-    mapedCategories: new Map()
-  }
-
-  componentWillReceiveProps(nextProps: any) {
-    if (this.props.categories.length !== nextProps.categories.length) {
-      this.setState({
-        mapedCategories: groupBy(nextProps.categories, (c: string) => c.split('/')[0])
-      })
-    }
-  }
-
   /* tslint:disable */
   render() {
     const { onSelect } = this.props
@@ -148,8 +135,7 @@ class Side extends React.Component<{
 
 class App extends React.Component {
   state = {
-    currentCategory: '',
-    categories: []
+    currentCategory: ''
   }
 
   selectCategory = (nextCategory: string) => {
@@ -166,24 +152,15 @@ class App extends React.Component {
     actions.setCategories(categories)
     // actions.setCategory('')
     console.log(getState())
-    this.setState({ categories })
   }
 
   render() {
-    const { currentCategory, categories } = this.state
+    const { currentCategory } = this.state
     return (
       <Container>
         <Provider>
-          <Side
-            currentCategory={currentCategory}
-            onSelect={this.selectCategory}
-            categories={categories}
-          />
-          <TaskScreen
-            currentCategory={currentCategory}
-            refresh={this.refresh}
-            categories={categories}
-          />
+          <Side currentCategory={currentCategory} onSelect={this.selectCategory} />
+          <TaskScreen currentCategory={currentCategory} refresh={this.refresh} />
         </Provider>
       </Container>
     )
