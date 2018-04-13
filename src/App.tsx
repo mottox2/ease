@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import TaskScreen from './components/TaskScreen'
-import Side from './components/Side'
+import Sidebar from './components/Sidebar'
 import { actions, Provider } from './store'
 import { lifecycle } from 'recompose'
 
@@ -39,7 +39,7 @@ const App = lifecycle({
   }
 })(() => (
   <Container>
-    <Side />
+    <Sidebar />
     <TaskScreen />
   </Container>
 ))
