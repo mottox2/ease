@@ -40,13 +40,13 @@ const TaskItem: React.StatelessComponent<Props & WithState> = ({
   }
   if (isEdit && toggleEdit) {
     return (
-      <div style={{ marginLeft: '-24px' }}>
+      <div style={{ marginLeft: '-20px' }}>
         <p
           style={{
             fontSize: '12px',
             color: 'rgb(24, 170, 59)',
             fontWeight: 'bold',
-            margin: '0 0 0 20px'
+            margin: '8px 0 -4px 20px'
           }}
         >
           Editing: {task.title}

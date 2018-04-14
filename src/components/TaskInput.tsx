@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 
 const Placeholder = styled.div`
   position: absolute;
-  left: 22px;
+  left: 30px;
   top: 23px;
   font-size: 14px;
   opacity: 0.5;
@@ -162,7 +162,7 @@ class TaskInput extends React.Component<Props> {
     const { enabledDescription, title, description, hasFocus } = this.state
     return (
       <div
-        style={{ position: 'relative', padding: '12px' }}
+        style={{ position: 'relative', padding: '12px 20px 0 20px' }}
         ref={(element: any) => {
           if (element) {
             this.wrapper = element
@@ -267,6 +267,17 @@ class TaskInput extends React.Component<Props> {
             />
           </DescriptionTextarea>
         </Wrapper>
+        <p
+          style={{
+            margin: '4px 0 0 0',
+            height: 16,
+            opacity: !enabledDescription && title.length > 0 ? 0.4 : 0,
+            fontSize: '10px',
+            transition: 'opacity .15s .3s ease-in'
+          }}
+        >
+          Shift + Enterで詳細を入力
+        </p>
       </div>
     )
   }
