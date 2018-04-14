@@ -2,8 +2,8 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Task } from '../DataBase'
 
-import TaskItem from './TaskItem'
-import TaskInput from './TaskInput'
+import TaskItem from '../components/TaskItem'
+import TaskInput from '../components/TaskInput'
 
 import groupBy from '../utils/groupBy'
 import { Consumer, actions } from '../store'
