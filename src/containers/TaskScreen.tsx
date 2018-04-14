@@ -2,8 +2,8 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Task } from '../DataBase'
 
-import TaskItem from './TaskItem'
-import TaskInput from './TaskInput'
+import TaskItem from '../components/TaskItem'
+import TaskInput from '../components/TaskInput'
 
 import groupBy from '../utils/groupBy'
 import { Consumer, actions } from '../store'
@@ -69,7 +69,8 @@ class TaskScreen extends React.Component<Props, State> {
     inputHeight: 0
   }
 
-  addTask = (task: Task) => {
+  // saveTask
+  saveTask = (task: Task) => {
     task.save().then(() => {
       this.props.refresh()
       this.fetchTask()
@@ -87,7 +88,7 @@ class TaskScreen extends React.Component<Props, State> {
     this.setState({ inputHeight: height })
   }
 
-  async fetchTask(path: string = this.props.currentCategory) {
+  fetchTask = async (path: string = this.props.currentCategory) => {
     const tasks = await Task.all(path)
     console.log(path, tasks)
     const pathLevel = path.split('/').length - 1
@@ -151,6 +152,7 @@ class TaskScreen extends React.Component<Props, State> {
                         task={task}
                         updateTask={this.updateTask}
                         deleteTask={this.deleteTask}
+                        saveTask={this.saveTask}
                       />
                     )
                   })}
@@ -160,7 +162,7 @@ class TaskScreen extends React.Component<Props, State> {
         </ScrollArea>
         <InputWrapper>
           <TaskInput
-            addTask={this.addTask}
+            onSubmit={this.saveTask}
             setHeight={this.setHeight}
             categories={this.props.categories}
           />

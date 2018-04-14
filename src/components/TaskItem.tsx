@@ -1,8 +1,10 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import linkifyUrls from 'linkify-urls'
+import { withState } from 'recompose'
 import { Task } from '../DataBase'
 import MaterialIcon from './MaterialIcon'
+import TaskInput from './TaskInput'
 
 const Circle = styled.div`
   border: 2px solid #ddd;
@@ -11,16 +13,58 @@ const Circle = styled.div`
   height: 20px;
   transition: background-color 0.1s ease-out;
 `
+interface WithState {
+  isEdit?: boolean
+  toggleEdit?: Function
+}
 
-/* tslint:disable:max-line-length */
-const TaskItem: React.StatelessComponent<{
+interface Props {
   className?: string
   task?: Task
   updateTask?: Function
   deleteTask?: Function
-}> = ({ task, className, updateTask, deleteTask }) => {
+  saveTask?: Function
+}
+
+const TaskItem: React.StatelessComponent<Props & WithState> = ({
+  task,
+  className,
+  updateTask,
+  deleteTask,
+  isEdit = false,
+  toggleEdit,
+  saveTask
+}) => {
   if (!task) {
     return <div>Invalid task</div>
+  }
+  if (isEdit) {
+    return (
+      <div style={{ marginLeft: '-24px' }}>
+        <p
+          style={{
+            fontSize: '12px',
+            color: 'rgb(24, 170, 59)',
+            fontWeight: 'bold',
+            margin: '0 0 0 20px'
+          }}
+        >
+          Editing: {task.title}
+        </p>
+        <TaskInput
+          task={task}
+          onSubmit={(newTask: Task) => {
+            if (saveTask) {
+              saveTask(newTask)
+            }
+            if (toggleEdit) {
+              toggleEdit(!isEdit)
+            }
+          }}
+          categories={[]}
+        />
+      </div>
+    )
   }
   const displayCategory = task.category.replace(/\w+\//, '')
   return (
@@ -58,7 +102,14 @@ const TaskItem: React.StatelessComponent<{
         )}
       </div>
       <div className="actions">
-        {/* <MaterialIcon icon="edit" style={{ top: 1 }} /> */}
+        <MaterialIcon
+          icon="edit"
+          onClick={() => {
+            if (toggleEdit) {
+              toggleEdit(!isEdit)
+            }
+          }}
+        />
         <MaterialIcon
           onClick={() => {
             if (!deleteTask) {
@@ -73,7 +124,7 @@ const TaskItem: React.StatelessComponent<{
   )
 }
 
-export default styled(TaskItem)`
+const Styled = styled(TaskItem)`
   margin: 12px 0;
   padding-right: 12px;
   padding-bottom: 12px;
@@ -145,3 +196,5 @@ export default styled(TaskItem)`
     }
   }
 `
+
+export default withState<Props, boolean, string, string>('isEdit', 'toggleEdit', false)(Styled)

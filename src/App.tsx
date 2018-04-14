@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import TaskScreen from './components/TaskScreen'
-import Sidebar from './components/Sidebar'
+import TaskScreen from './containers/TaskScreen'
+import Sidebar from './containers/Sidebar'
 import { actions, Provider } from './store'
 import { lifecycle } from 'recompose'
 

@@ -51,13 +51,15 @@ const DescriptionTextarea = styled.div`
 `
 
 interface Props {
-  addTask: Function
-  setHeight: Function
+  task?: Task
+  onSubmit: Function
+  setHeight?: Function
   categories: Array<string>
 }
 
 class TaskInput extends React.Component<Props> {
   state = {
+    id: null,
     title: '',
     description: '',
     enabledDescription: false,
@@ -67,6 +69,17 @@ class TaskInput extends React.Component<Props> {
   wrapper?: HTMLElement
   editor?: CodeMirror.Editor
   textarea?: HTMLElement
+
+  componentWillMount() {
+    const task = this.props.task
+    if (task) {
+      this.setState({
+        id: task.id,
+        title: task.category + task.title,
+        description: task.description
+      })
+    }
+  }
 
   componentDidMount() {
     this.setHeight()
@@ -83,7 +96,7 @@ class TaskInput extends React.Component<Props> {
   }
 
   setHeight() {
-    if (this.wrapper) {
+    if (this.wrapper && this.props.setHeight) {
       this.props.setHeight(this.wrapper.offsetHeight)
     }
   }
@@ -96,9 +109,10 @@ class TaskInput extends React.Component<Props> {
     const newTask = new Task(
       title,
       (this.state.title.match(/\w+\//g) || []).join(''),
-      this.state.description
+      this.state.description,
+      { id: this.state.id }
     )
-    this.props.addTask(newTask)
+    this.props.onSubmit(newTask)
     this.setState({
       title: '',
       description: '',
@@ -191,6 +205,8 @@ class TaskInput extends React.Component<Props> {
               if (change.update) {
                 change.update(change.from, change.to, [newtext])
               }
+              console.log(change, value)
+              // TODO: Unmountする際にsetStateが残りメモリーリークの原因になる可能性がある
               this.setState({ title: value.replace(/\n/g, '') })
               return true
             }}
