@@ -38,7 +38,7 @@ const TaskItem: React.StatelessComponent<Props & WithState> = ({
   if (!task) {
     return <div>Invalid task</div>
   }
-  if (isEdit) {
+  if (isEdit && toggleEdit) {
     return (
       <div style={{ marginLeft: '-24px' }}>
         <p
@@ -54,10 +54,13 @@ const TaskItem: React.StatelessComponent<Props & WithState> = ({
         <TaskInput
           task={task}
           onSubmit={(newTask: Task) => {
-            if (saveTask && toggleEdit) {
+            if (saveTask) {
               saveTask(newTask)
               toggleEdit(!isEdit)
             }
+          }}
+          cancel={() => {
+            toggleEdit(!isEdit)
           }}
           categories={[]}
         />

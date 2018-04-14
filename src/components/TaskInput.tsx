@@ -55,6 +55,7 @@ interface Props {
   onSubmit: Function
   setHeight?: Function
   categories: Array<string>
+  cancel?: Function
 }
 
 class TaskInput extends React.Component<Props> {
@@ -189,6 +190,10 @@ class TaskInput extends React.Component<Props> {
               if (completion && completion.data.list.length > 0) {
                 return true
               }
+              if (e.keyCode === KeyCode.ESC && this.props.cancel) {
+                this.props.cancel()
+                return false
+              }
               if (e.keyCode === KeyCode.ENTER && (e.metaKey || e.ctrlKey || e.shiftKey)) {
                 this.setState({ enabledDescription: true })
                 if (this.textarea) {
@@ -244,6 +249,10 @@ class TaskInput extends React.Component<Props> {
                     this.editor.focus()
                     this.setHeight()
                   }
+                  return false
+                }
+                if (e.keyCode === KeyCode.ESC && this.props.cancel) {
+                  this.props.cancel()
                   return false
                 }
                 return true
