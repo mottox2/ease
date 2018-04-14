@@ -26,15 +26,27 @@ export const initializeData = async () => {
   if (taskCount < 1) {
     db.tasks.bulkAdd([
       {
-        title: 'Tutorial',
+        title: 'easeはPCに特化した、簡単にタスクを追加できるToDoリストです。',
         category: '',
-        description: 'タスクは完了すると、リロードしたタイミングで削除されます',
+        description: '雑にカテゴリを切ってタスクを作れます。',
         done: 0
       },
       {
-        title: 'Tutorial2',
+        title: 'タスクの説明文を簡単に入力できる！',
+        category: '',
+        description: 'タスク作成欄でShift-Enterを押すと説明文を追加できます。',
+        done: 0
+      },
+      {
+        title: 'スラッシュ区切りでカテゴリに！',
         category: 'category/',
         description: 'スラッシュ(/)区切りでカテゴリを作ることが出来ます',
+        done: 0
+      },
+      {
+        title: 'カテゴリは階層を深くできる！',
+        category: 'category/nested',
+        description: '2階層以上も同じようにタスクを作れます。',
         done: 0
       }
     ])
