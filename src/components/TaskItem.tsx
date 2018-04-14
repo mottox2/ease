@@ -50,11 +50,11 @@ const TaskItem: React.StatelessComponent<Props & WithState> = ({
           Editing: {task.title}
         </p>
         <TaskInput
-          addTask={() => {
-            console.log('a')
-          }}
-          setHeight={() => {
-            console.log('b')
+          task={task}
+          onSubmit={() => {
+            if (toggleEdit) {
+              toggleEdit(!isEdit)
+            }
           }}
           categories={[]}
         />
