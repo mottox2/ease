@@ -70,7 +70,7 @@ class TaskScreen extends React.Component<Props, State> {
   }
 
   // saveTask
-  addTask = (task: Task) => {
+  saveTask = (task: Task) => {
     task.save().then(() => {
       this.props.refresh()
       this.fetchTask()
@@ -152,7 +152,7 @@ class TaskScreen extends React.Component<Props, State> {
                         task={task}
                         updateTask={this.updateTask}
                         deleteTask={this.deleteTask}
-                        fetchTask={this.fetchTask}
+                        saveTask={this.saveTask}
                       />
                     )
                   })}
@@ -162,7 +162,7 @@ class TaskScreen extends React.Component<Props, State> {
         </ScrollArea>
         <InputWrapper>
           <TaskInput
-            onSubmit={this.addTask}
+            onSubmit={this.saveTask}
             setHeight={this.setHeight}
             categories={this.props.categories}
           />
