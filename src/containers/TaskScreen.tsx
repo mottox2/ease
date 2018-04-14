@@ -69,6 +69,7 @@ class TaskScreen extends React.Component<Props, State> {
     inputHeight: 0
   }
 
+  // saveTask
   addTask = (task: Task) => {
     task.save().then(() => {
       this.props.refresh()
@@ -87,7 +88,7 @@ class TaskScreen extends React.Component<Props, State> {
     this.setState({ inputHeight: height })
   }
 
-  async fetchTask(path: string = this.props.currentCategory) {
+  fetchTask = async (path: string = this.props.currentCategory) => {
     const tasks = await Task.all(path)
     console.log(path, tasks)
     const pathLevel = path.split('/').length - 1
@@ -151,6 +152,7 @@ class TaskScreen extends React.Component<Props, State> {
                         task={task}
                         updateTask={this.updateTask}
                         deleteTask={this.deleteTask}
+                        fetchTask={this.fetchTask}
                       />
                     )
                   })}

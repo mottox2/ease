@@ -59,6 +59,7 @@ interface Props {
 
 class TaskInput extends React.Component<Props> {
   state = {
+    id: null,
     title: '',
     description: '',
     enabledDescription: false,
@@ -73,6 +74,7 @@ class TaskInput extends React.Component<Props> {
     const task = this.props.task
     if (task) {
       this.setState({
+        id: task.id,
         title: task.category + task.title,
         description: task.description
       })
@@ -107,7 +109,8 @@ class TaskInput extends React.Component<Props> {
     const newTask = new Task(
       title,
       (this.state.title.match(/\w+\//g) || []).join(''),
-      this.state.description
+      this.state.description,
+      { id: this.state.id }
     )
     this.props.onSubmit(newTask)
     this.setState({

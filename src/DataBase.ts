@@ -92,13 +92,23 @@ export class Task implements TaskInterface {
 
   async save(): Promise<Task> {
     const db = new DataBase()
-    const id = await db.tasks.add({
-      title: this.title,
-      category: this.category,
-      description: this.description,
-      done: 0
-    })
-    this.id = id
+    if (this.id) {
+      await db.tasks.put({
+        id: this.id,
+        title: this.title,
+        category: this.category,
+        description: this.description,
+        done: 0
+      })
+    } else {
+      const id = await db.tasks.add({
+        title: this.title,
+        category: this.category,
+        description: this.description,
+        done: 0
+      })
+      this.id = id
+    }
     return this
   }
 

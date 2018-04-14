@@ -23,6 +23,7 @@ interface Props {
   task?: Task
   updateTask?: Function
   deleteTask?: Function
+  fetchTask?: Function
 }
 
 const TaskItem: React.StatelessComponent<Props & WithState> = ({
@@ -31,7 +32,8 @@ const TaskItem: React.StatelessComponent<Props & WithState> = ({
   updateTask,
   deleteTask,
   isEdit = false,
-  toggleEdit
+  toggleEdit,
+  fetchTask
 }) => {
   if (!task) {
     return <div>Invalid task</div>
@@ -51,8 +53,13 @@ const TaskItem: React.StatelessComponent<Props & WithState> = ({
         </p>
         <TaskInput
           task={task}
-          onSubmit={() => {
+          onSubmit={(newTask: Task) => {
             if (toggleEdit) {
+              newTask.save().then(() => {
+                if (fetchTask) {
+                  fetchTask()
+                }
+              })
               toggleEdit(!isEdit)
             }
           }}
