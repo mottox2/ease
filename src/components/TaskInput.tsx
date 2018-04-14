@@ -106,6 +106,15 @@ class TaskInput extends React.Component<StoreProps & Props> {
     })
   }
 
+  componentWillReceiveProps(nextProps: Props & StoreProps) {
+    if (
+      this.props.currentCategory !== nextProps.currentCategory &&
+      this.props.currentCategory === this.state.title
+    ) {
+      this.setState({ title: nextProps.currentCategory })
+    }
+  }
+
   setHeight() {
     if (this.wrapper && this.props.setHeight) {
       this.props.setHeight(this.wrapper.offsetHeight)
