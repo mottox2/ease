@@ -76,13 +76,18 @@ class TaskInput extends React.Component<Props> {
       this.setState({
         id: task.id,
         title: task.category + task.title,
-        description: task.description
+        description: task.description,
+        enabledDescription: task.description.length > 0
       })
     }
   }
 
   componentDidMount() {
     this.setHeight()
+
+    if (this.props.task && this.editor) {
+      this.editor.focus()
+    }
 
     window.addEventListener('keydown', (e: KeyboardEvent) => {
       const tagName = document.activeElement.tagName

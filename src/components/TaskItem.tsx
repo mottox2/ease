@@ -54,10 +54,8 @@ const TaskItem: React.StatelessComponent<Props & WithState> = ({
         <TaskInput
           task={task}
           onSubmit={(newTask: Task) => {
-            if (saveTask) {
+            if (saveTask && toggleEdit) {
               saveTask(newTask)
-            }
-            if (toggleEdit) {
               toggleEdit(!isEdit)
             }
           }}
