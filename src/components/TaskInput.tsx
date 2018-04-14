@@ -7,6 +7,7 @@ import 'codemirror/addon/hint/show-hint'
 
 import TextareaAutosize from 'react-autosize-textarea'
 import { Task } from '../DataBase'
+import { Consumer } from '../store'
 
 declare global {
   interface Window {
@@ -54,11 +55,15 @@ interface Props {
   task?: Task
   onSubmit: Function
   setHeight?: Function
-  categories: Array<string>
   cancel?: Function
 }
 
-class TaskInput extends React.Component<Props> {
+interface StoreProps {
+  categories: Array<string>
+  currentCategory: string
+}
+
+class TaskInput extends React.Component<StoreProps & Props> {
   state = {
     id: null,
     title: '',
@@ -271,7 +276,7 @@ class TaskInput extends React.Component<Props> {
           style={{
             margin: '4px 0 0 0',
             height: 16,
-            opacity: !enabledDescription && title.length > 0 ? 0.4 : 0,
+            opacity: !enabledDescription && this.isValid() && title.length > 0 ? 0.4 : 0,
             fontSize: '10px',
             transition: 'opacity .15s .3s ease-in'
           }}
@@ -283,4 +288,17 @@ class TaskInput extends React.Component<Props> {
   }
 }
 
-export default TaskInput
+const TaskInputWrapper: React.SFC<Props> = props => {
+  return (
+    <Consumer
+      mapStateToProps={(state: StoreProps) => ({
+        currentCategory: state.currentCategory,
+        categories: state.categories
+      })}
+    >
+      {(storeProps: StoreProps) => <TaskInput {...props} {...storeProps} />}
+    </Consumer>
+  )
+}
+
+export default TaskInputWrapper

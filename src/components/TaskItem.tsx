@@ -62,7 +62,6 @@ const TaskItem: React.StatelessComponent<Props & WithState> = ({
           cancel={() => {
             toggleEdit(!isEdit)
           }}
-          categories={[]}
         />
       </div>
     )

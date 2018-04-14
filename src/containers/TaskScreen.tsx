@@ -161,11 +161,7 @@ class TaskScreen extends React.Component<Props, State> {
             })}
         </ScrollArea>
         <InputWrapper>
-          <TaskInput
-            onSubmit={this.saveTask}
-            setHeight={this.setHeight}
-            categories={this.props.categories}
-          />
+          <TaskInput onSubmit={this.saveTask} setHeight={this.setHeight} />
         </InputWrapper>
       </Main>
     )
