@@ -121,7 +121,7 @@ class TaskInput extends React.Component<StoreProps & Props> {
       title,
       (this.state.title.match(/\w+\//g) || []).join(''),
       this.state.description,
-      { id: this.state.id }
+      { id: this.state.id, done: this.props.task && this.props.task.done ? '1' : '0' }
     )
     this.props.onSubmit(newTask)
     this.setState({
@@ -190,7 +190,6 @@ class TaskInput extends React.Component<StoreProps & Props> {
               mode: 'custom'
             }}
             onKeyDown={(editor: CodeMirror.Editor, e: any) => {
-              console.log(editor.state.completionActive)
               const completion = editor.state.completionActive
               if (completion && completion.data.list.length > 0) {
                 return true
@@ -220,7 +219,6 @@ class TaskInput extends React.Component<StoreProps & Props> {
               if (change.update) {
                 change.update(change.from, change.to, [newtext])
               }
-              console.log(change, value)
               // TODO: Unmountする際にsetStateが残りメモリーリークの原因になる可能性がある
               this.setState({ title: value.replace(/\n/g, '') })
               return true

@@ -110,7 +110,7 @@ export class Task implements TaskInterface {
         title: this.title,
         category: this.category,
         description: this.description,
-        done: 0
+        done: this.done
       })
     } else {
       const id = await db.tasks.add({
