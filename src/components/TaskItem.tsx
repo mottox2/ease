@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import linkifyUrls from 'linkify-urls'
+import { withState } from 'recompose'
 import { Task } from '../DataBase'
 import MaterialIcon from './MaterialIcon'
 
@@ -11,14 +12,26 @@ const Circle = styled.div`
   height: 20px;
   transition: background-color 0.1s ease-out;
 `
+interface WithState {
+  isEdit?: boolean
+  toggleEdit?: Function
+}
 
-/* tslint:disable:max-line-length */
-const TaskItem: React.StatelessComponent<{
+interface Props {
   className?: string
   task?: Task
   updateTask?: Function
   deleteTask?: Function
-}> = ({ task, className, updateTask, deleteTask }) => {
+}
+
+const TaskItem: React.StatelessComponent<Props & WithState> = ({
+  task,
+  className,
+  updateTask,
+  deleteTask,
+  isEdit,
+  toggleEdit
+}) => {
   if (!task) {
     return <div>Invalid task</div>
   }
@@ -73,7 +86,7 @@ const TaskItem: React.StatelessComponent<{
   )
 }
 
-export default styled(TaskItem)`
+const Styled = styled(TaskItem)`
   margin: 12px 0;
   padding-right: 12px;
   padding-bottom: 12px;
@@ -145,3 +158,5 @@ export default styled(TaskItem)`
     }
   }
 `
+
+export default withState<Props, boolean, string, string>('isEdit', 'toggleEdit', false)(Styled)
