@@ -4,6 +4,7 @@ import linkifyUrls from 'linkify-urls'
 import { withState } from 'recompose'
 import { Task } from '../DataBase'
 import MaterialIcon from './MaterialIcon'
+import TaskInput from './TaskInput'
 
 const Circle = styled.div`
   border: 2px solid #ddd;
@@ -29,11 +30,36 @@ const TaskItem: React.StatelessComponent<Props & WithState> = ({
   className,
   updateTask,
   deleteTask,
-  isEdit,
+  isEdit = false,
   toggleEdit
 }) => {
   if (!task) {
     return <div>Invalid task</div>
+  }
+  if (isEdit) {
+    return (
+      <div style={{ marginLeft: '-24px' }}>
+        <p
+          style={{
+            fontSize: '12px',
+            color: 'rgb(24, 170, 59)',
+            fontWeight: 'bold',
+            margin: '0 0 0 20px'
+          }}
+        >
+          Editing: {task.title}
+        </p>
+        <TaskInput
+          addTask={() => {
+            console.log('a')
+          }}
+          setHeight={() => {
+            console.log('b')
+          }}
+          categories={[]}
+        />
+      </div>
+    )
   }
   const displayCategory = task.category.replace(/\w+\//, '')
   return (
@@ -71,7 +97,14 @@ const TaskItem: React.StatelessComponent<Props & WithState> = ({
         )}
       </div>
       <div className="actions">
-        {/* <MaterialIcon icon="edit" style={{ top: 1 }} /> */}
+        <MaterialIcon
+          icon="edit"
+          onClick={() => {
+            if (toggleEdit) {
+              toggleEdit(!isEdit)
+            }
+          }}
+        />
         <MaterialIcon
           onClick={() => {
             if (!deleteTask) {
