@@ -117,11 +117,14 @@ class TaskInput extends React.Component<StoreProps & Props> {
     if (title.length < 1) {
       return false
     }
+    if (this.props.task) {
+      console.log(this.props.task.done)
+    }
     const newTask = new Task(
       title,
       (this.state.title.match(/\w+\//g) || []).join(''),
       this.state.description,
-      { id: this.state.id, done: this.props.task && this.props.task.done ? '1' : '0' }
+      { id: this.state.id, done: this.props.task && this.props.task.done ? 1 : 0 }
     )
     this.props.onSubmit(newTask)
     this.setState({
